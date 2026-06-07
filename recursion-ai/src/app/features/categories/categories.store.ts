@@ -20,13 +20,12 @@ export class CategoriesStore {
   readonly search = signal('');
   readonly sortDesc = signal(false);
   readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
   readonly hasMore = signal(true);
 
   private pageNumber = 0;
   private loadSub?: Subscription;
 
-  readonly isEmpty = computed(() => !this.loading() && this.items().length === 0 && !this.error());
+  readonly isEmpty = computed(() => !this.loading() && this.items().length === 0);
 
   /** Сброс пагинации и загрузка первой страницы. */
   reload(): void {
@@ -36,7 +35,6 @@ export class CategoriesStore {
     this.pageNumber = 0;
     this.items.set([]);
     this.hasMore.set(true);
-    this.error.set(null);
     this.loading.set(false);
     this.loadNextPage();
   }
@@ -47,7 +45,6 @@ export class CategoriesStore {
       return;
     }
     this.loading.set(true);
-    this.error.set(null);
 
     const search = this.search().trim();
     this.loadSub = this.api
@@ -61,14 +58,11 @@ export class CategoriesStore {
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe({
-        next: (res) => {
-          this.items.update((curr) => [...curr, ...res.items]);
-          this.canEdit.set(res.canEdit);
-          this.hasMore.set(res.items.length === PAGE_SIZE);
-          this.pageNumber++;
-        },
-        error: () => this.error.set('Не удалось загрузить категории.'),
+      .subscribe((res) => {
+        this.items.update((curr) => [...curr, ...res.items]);
+        this.canEdit.set(res.canEdit);
+        this.hasMore.set(res.items.length === PAGE_SIZE);
+        this.pageNumber++;
       });
   }
 

@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -65,16 +66,10 @@ export class CategoryEditDialog implements OnInit {
       return;
     }
     this.loading.set(true);
-    this.api.getById({ id }).subscribe({
-      next: (category) => {
-        this.nameCtrl.setValue(category.name);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.close();
-      },
-    });
+    // Ошибку загрузки покажет глобальный errorInterceptor (toast); loading снимаем в finalize.
+    this.api.getById({ id })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((category) => this.nameCtrl.setValue(category.name));
   }
 
   save(): void {
@@ -83,37 +78,33 @@ export class CategoryEditDialog implements OnInit {
       return;
     }
     const name = this.nameCtrl.getRawValue().trim();
-    this.editId() ? this.editCategory(this.editId() as number, name) : this.createCategory(name);
-  }
-
-  editCategory(id: number, name: string) {
-    this.api.update({ id, zidiumWebServiceFrontEditCategoryDto: { name } }).subscribe({
-      next: () => {
-        this.store.upsert({ id, name });
-        this.afterSave();
-      },
-      error: () => this.saving.set(false),
-    });
-  }
-
-  createCategory(name: string): void {
+    const id = this.editId();
     this.saving.set(true);
-    this.api.add({ zidiumWebServiceFrontEditCategoryDto: { name } }).subscribe({
-      next: (newId) => {
+    id !== null ? this.editCategory(id, name) : this.createCategory(name);
+  }
+
+  private editCategory(id: number, name: string): void {
+    this.api
+      .update({ id, zidiumWebServiceFrontEditCategoryDto: { name } })
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe(() => {
+        this.store.upsert({ id, name });
+        this.close();
+      });
+  }
+
+  private createCategory(name: string): void {
+    this.api
+      .add({ zidiumWebServiceFrontEditCategoryDto: { name } })
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe((newId) => {
         this.store.upsert({ id: newId, name });
-        this.afterSave();
-      },
-      error: () => this.saving.set(false),
-    });
+        this.close();
+      });
   }
 
   close(): void {
     this.visible.set(false);
     void this.router.navigate(['/categories']);
-  }
-
-  private afterSave(): void {
-    this.saving.set(false);
-    this.close();
   }
 }

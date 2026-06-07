@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 import { ZidiumPreset } from './core/config/theme';
 import { authInterceptor } from './core/auth/auth.interceptor';
+import { errorInterceptor } from './core/http/error.interceptor';
 import { environment } from './core/config/environment';
 import { BASE_PATH } from './core/api';
 
@@ -20,7 +21,11 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    // errorInterceptor — внешний: ловит итоговую ошибку уже после refresh/повтора authInterceptor.
+    provideHttpClient(withInterceptors([
+      errorInterceptor,
+      authInterceptor
+    ])),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 import { CategoriesService } from '../../core/api';
 import { Category } from '../../core/api-types';
@@ -105,12 +105,5 @@ describe('CategoriesStore', () => {
 
     store.upsert({ id: 1, name: 'renamed' });
     expect(store.items().find((i) => i.id === 1)?.name).toBe('renamed');
-  });
-
-  it('sets error on failed load', () => {
-    api.getAll.and.returnValue(throwError(() => new Error('boom')));
-    store.reload();
-    expect(store.error()).toBeTruthy();
-    expect(store.loading()).toBeFalse();
   });
 });

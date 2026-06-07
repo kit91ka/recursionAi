@@ -1,8 +1,10 @@
+import { HttpContext } from '@angular/common/http';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { catchError, first, map, Observable, of, switchMap, timer } from 'rxjs';
 
 import { CategoriesService } from '../../core/api';
 import { NAME_VALIDATION_DEBOUNCE_MS } from '../../core/config/constants';
+import { SKIP_ERROR_TOAST } from '../../core/http/error.interceptor';
 
 /**
  * Асинхронный валидатор уникальности имени категории.
@@ -23,8 +25,10 @@ export function nameExistsValidator(
     }
 
     const id = getCurrentId();
+    // Фоновая проверка: глушим глобальный toast, ошибку гасим локально (of(null)).
+    const context = new HttpContext().set(SKIP_ERROR_TOAST, true);
     return timer(NAME_VALIDATION_DEBOUNCE_MS).pipe(
-      switchMap(() => api.nameExists({ name, id: id ?? undefined })),
+      switchMap(() => api.nameExists({ name, id: id ?? undefined }, 'body', false, { context })),
       map((exists) => (exists ? { nameTaken: true } : null)),
       catchError(() => of(null)),
       first(),

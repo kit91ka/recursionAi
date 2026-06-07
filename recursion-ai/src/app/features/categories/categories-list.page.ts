@@ -19,11 +19,11 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 
 import { CategoriesService } from '../../core/api';
 import { Category } from '../../core/api-types';
-import { SEARCH_DEBOUNCE_MS } from '../../core/config/constants';
+import { INFINITE_SCROLL_PREFETCH_PX, SEARCH_DEBOUNCE_MS } from '../../core/config/constants';
 import { CategoriesStore } from './categories.store';
 
 @Component({
@@ -45,13 +45,11 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   private readonly store = inject(CategoriesStore);
   private readonly api = inject(CategoriesService);
   private readonly confirm = inject(ConfirmationService);
-  private readonly messages = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly items = this.store.items;
   readonly canEdit = this.store.canEdit;
   readonly loading = this.store.loading;
-  readonly error = this.store.error;
   readonly sortDesc = this.store.sortDesc;
   readonly isEmpty = this.store.isEmpty;
 
@@ -63,10 +61,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   constructor() {
     // Догрузка, пока контент не заполнил вьюпорт: после каждого рендера, если
     // сентинел всё ещё близко к низу окна, тянем следующую страницу.
-    afterRenderEffect(() => {
-    //   this.items();
-      this.autoFillViewport();
-    });
+    afterRenderEffect(() => this.autoFillViewport());
   }
 
   ngOnInit(): void {
@@ -92,7 +87,7 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
           this.store.loadNextPage();
         }
       },
-      { rootMargin: '200px' },
+      { rootMargin: `${INFINITE_SCROLL_PREFETCH_PX}px` },
     );
     this.observer.observe(el);
   }
@@ -106,17 +101,13 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
     if (!el || this.loading() || !this.store.hasMore()) {
       return;
     }
-    if (el.getBoundingClientRect().top <= window.innerHeight + 200) {
+    if (el.getBoundingClientRect().top <= window.innerHeight + INFINITE_SCROLL_PREFETCH_PX) {
       this.store.loadNextPage();
     }
   }
 
   toggleSort(): void {
     this.store.toggleSort();
-  }
-
-  retry(): void {
-    this.store.reload();
   }
 
   confirmDelete(category: Category, event: Event): void {
@@ -133,14 +124,6 @@ export class CategoriesListPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private deleteCategory(id: number): void {
-    this.api._delete({ id }).subscribe({
-      next: () => this.store.removeFromList(id),
-      error: () =>
-        this.messages.add({
-          severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не удалось удалить категорию.',
-        }),
-    });
+    this.api._delete({ id }).subscribe(() => this.store.removeFromList(id));
   }
 }

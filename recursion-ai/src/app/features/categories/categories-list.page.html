@@ -78,13 +78,6 @@
     </div>
   }
 
-  @if (error()) {
-    <div class="categories__error">
-      <span>{{ error() }}</span>
-      <p-button label="Повторить" severity="secondary" [text]="true" (onClick)="retry()" />
-    </div>
-  }
-
   <!-- Сентинел для бесконечной прокрутки (страничный скролл вьюпорта) -->
   <div #sentinel class="categories__sentinel" aria-hidden="true"></div>
 </section>

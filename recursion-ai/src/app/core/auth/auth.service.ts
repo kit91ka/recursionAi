@@ -1,9 +1,10 @@
+import { HttpContext } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
-import { LogonService } from '../api';
-import { CurrentUserDto } from '../api-types';
+import { CurrentUserDto, LogonService } from '../api';
+import { SKIP_ERROR_TOAST } from '../http/error.interceptor';
 import { TokenStorage } from './token-storage';
 
 /**
@@ -27,12 +28,17 @@ export class AuthService {
   }
 
   logon(login: string, password: string): Observable<unknown> {
-    return this.logonApi.logon({ logonRequestDto: { login, password } }).pipe(
-      tap((res) => {
-        this.storage.setTokens(res.token, res.refreshToken);
-        this._currentUser.set(res.user);
-      }),
-    );
+    // Ошибку входа показывает сама форма (inline под полем Password), поэтому
+    // запрос помечен SKIP_ERROR_TOAST — глобальный errorInterceptor его не трогает.
+    const context = new HttpContext().set(SKIP_ERROR_TOAST, true);
+    return this.logonApi
+      .logon({ logonRequestDto: { login, password } }, 'body', false, { context })
+      .pipe(
+        tap((res) => {
+          this.storage.setTokens(res.token, res.refreshToken);
+          this._currentUser.set(res.user);
+        }),
+      );
   }
 
   /** Обновление пары токенов по refresh-токену. */
