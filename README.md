@@ -49,8 +49,6 @@ npm test           # unit-тесты
 npm run e2e        # e2e (Playwright)
 ```
 
-> _TODO: уточнить команды после инициализации Angular-проекта._
-
 ---
 
 ## Структура репозитория
@@ -105,4 +103,3 @@ recursionAi/
 | `npm run e2e` | e2e-тесты (Playwright) |
 | `npm run lint` | линт |
 
-> _TODO: финализировать после инициализации проекта._

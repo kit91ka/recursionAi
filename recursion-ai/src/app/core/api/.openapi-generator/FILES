@@ -1,8 +1,6 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.module.ts
-api/api.ts
 api/categories.service.ts
 api/categories.serviceInterface.ts
 api/component-header.service.ts
