@@ -1,5 +1,7 @@
 # === Секреты / окружение ===
-environment.ts
+# Только корневой environment.ts (содержит Figma-токен).
+# Штатный конфиг Angular recursion-ai/src/app/core/config/environment.ts НЕ игнорируется.
+/environment.ts
 *.env
 .env
 .env.*
