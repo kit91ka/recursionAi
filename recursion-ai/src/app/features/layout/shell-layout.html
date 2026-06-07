@@ -1,0 +1,45 @@
+<div class="shell">
+  <nav class="shell__sidebar" aria-label="Главное меню">
+    <div class="shell__group shell__group--top">
+      <button type="button" class="shell__icon" title="Развернуть меню" aria-label="Развернуть меню">
+        <i class="pi pi-angle-double-right"></i>
+      </button>
+      <button type="button" class="shell__icon" title="Справочники" aria-label="Справочники">
+        <i class="pi pi-sitemap"></i>
+      </button>
+      <button
+        type="button"
+        class="shell__icon shell__icon--active"
+        title="Настройки"
+        aria-label="Настройки"
+        aria-current="page"
+      >
+        <i class="pi pi-cog"></i>
+      </button>
+    </div>
+
+    <div class="shell__group shell__group--bottom">
+      <button
+        type="button"
+        class="shell__icon"
+        [title]="userName()?.displayName || 'Профиль'"
+        aria-label="Профиль"
+      >
+        <i class="pi pi-user"></i>
+      </button>
+      <button
+        type="button"
+        class="shell__icon"
+        title="Выход"
+        aria-label="Выход"
+        (click)="logout()"
+      >
+        <i class="pi pi-sign-out"></i>
+      </button>
+    </div>
+  </nav>
+
+  <main class="shell__content">
+    <router-outlet />
+  </main>
+</div>

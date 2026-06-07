@@ -1,0 +1,50 @@
+<div class="login-screen">
+  <form class="login-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <h1 class="login-card__title">Logon to Zidium</h1>
+
+    <div class="login-field">
+      <label for="login">Login</label>
+      <input
+        pInputText
+        fluid
+        id="login"
+        formControlName="login"
+        autocomplete="username"
+        [class.ng-invalid]="submitted() && form.controls.login.invalid"
+        [class.ng-dirty]="submitted() && form.controls.login.invalid"
+      />
+      @if (submitted() && form.controls.login.errors?.['required']) {
+        <small class="login-field__error">Field is required</small>
+      }
+    </div>
+
+    <div class="login-field">
+      <label for="password">Password</label>
+      <p-password
+        inputId="password"
+        formControlName="password"
+        fluid
+        [feedback]="false"
+        [toggleMask]="true"
+        autocomplete="current-password"
+        [inputStyleClass]="
+          (submitted() && form.controls.password.invalid) || serverError()
+            ? 'ng-invalid ng-dirty'
+            : ''
+        "
+      />
+      @if (submitted() && form.controls.password.errors?.['required']) {
+        <small class="login-field__error">Field is required</small>
+      } @else if (serverError()) {
+        <small class="login-field__error">{{ serverError() }}</small>
+      }
+    </div>
+
+    <p-button
+      type="submit"
+      label="Logon"
+      styleClass="login-card__submit"
+      [loading]="loading()"
+    />
+  </form>
+</div>

@@ -1,0 +1,53 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="$event ? null : close()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '420px' }"
+  [header]="isEdit() ? 'Edit' : 'Add'"
+  (onHide)="close()"
+>
+  <form class="dialog-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    @if (isEdit()) {
+      <div class="dialog-field">
+        <span class="dialog-field__label">Id</span>
+        <span class="dialog-field__value">{{ editId() }}</span>
+      </div>
+    }
+
+    <div class="dialog-field">
+      <label for="name" class="dialog-field__label">Name</label>
+      <input
+        pInputText
+        fluid
+        id="name"
+        formControlName="name"
+        [readonly]="!canEdit()"
+        [class.ng-invalid]="nameCtrl.invalid && nameCtrl.touched"
+        [class.ng-dirty]="nameCtrl.invalid && nameCtrl.touched"
+      />
+      @if (nameCtrl.pending) {
+        <small class="dialog-field__hint">Проверка имени…</small>
+      }
+      @if (nameCtrl.touched && nameCtrl.errors?.['required']) {
+        <small class="dialog-field__error">Field is required</small>
+      }
+      @if (nameCtrl.errors?.['nameTaken']) {
+        <small class="dialog-field__error">Название уже занято</small>
+      }
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Close" severity="secondary" [text]="true" (onClick)="close()" />
+    @if (canEdit()) {
+      <p-button
+        label="Save"
+        (onClick)="save()"
+        [loading]="saving()"
+        [disabled]="form.invalid || nameCtrl.pending"
+      />
+    }
+  </ng-template>
+</p-dialog>

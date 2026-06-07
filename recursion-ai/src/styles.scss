@@ -1,0 +1,80 @@
+/* Global styles — design tokens from Figma (см. plan.txt, раздел 2) */
+@use 'primeicons/primeicons.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+  /* Цвета */
+  --color-primary: #005baa;
+  --color-primary-text: #ffffff;
+  --color-danger: #a9120a;
+  --color-neutral-bg: #f4f4f5;
+  --color-text: #263238;
+  --color-muted: #677379;
+  --color-placeholder: #dee2e6;
+  --color-table-head: #f9fafc;
+  --color-sidebar: #f9fafc;
+  --color-error: #e91e63;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+
+  /* Радиусы */
+  --radius-control: 8px;
+  --radius-card: 10px;
+
+  /* Типографика */
+  --font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  --text-body: 14px;
+  --text-title: 18px;
+  --text-page: 24px;
+
+  /* Лейаут */
+  --sidebar-width: 78px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  color: var(--color-text);
+  background: var(--color-neutral-bg);
+}
+
+/* Поля модалки Add/Edit (контент рендерится в оверлее PrimeNG) */
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &__label {
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  &__value {
+    color: var(--color-muted);
+  }
+
+  &__hint {
+    color: var(--color-muted);
+    font-size: 12px;
+  }
+
+  &__error {
+    color: var(--color-error);
+    font-size: 12px;
+  }
+}

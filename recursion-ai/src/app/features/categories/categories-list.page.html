@@ -1,0 +1,93 @@
+<section class="categories">
+  <header class="categories__header">
+    <h1 class="categories__title">Categories</h1>
+    @if (canEdit()) {
+      <p-button
+        label="Add"
+        icon="pi pi-plus"
+        severity="secondary"
+        [text]="true"
+        routerLink="new"
+        styleClass="categories__add"
+      />
+    }
+  </header>
+
+  <div class="categories__search">
+    <input
+      pInputText
+      fluid
+      type="text"
+      placeholder="Search"
+      [formControl]="searchControl"
+      aria-label="Search categories"
+    />
+  </div>
+
+  <p-table [value]="items()" styleClass="categories__table">
+    <ng-template #header>
+      <tr>
+        <th class="categories__col-id">Id</th>
+        <th class="categories__col-name" (click)="toggleSort()">
+          <span class="categories__sortable">
+            Name
+            <i
+              class="pi"
+              [class.pi-sort-amount-up-alt]="!sortDesc()"
+              [class.pi-sort-amount-down]="sortDesc()"
+            ></i>
+          </span>
+        </th>
+        @if (canEdit()) {
+          <th class="categories__col-actions"></th>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-category>
+      <tr class="categories__row" [routerLink]="[category.id]">
+        <td>{{ category.id }}</td>
+        <td>{{ category.name }}</td>
+        @if (canEdit()) {
+          <td class="categories__col-actions">
+            <button
+              type="button"
+              class="categories__delete"
+              aria-label="Delete"
+              (click)="confirmDelete(category, $event)"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </td>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      @if (isEmpty()) {
+        <tr>
+          <td [attr.colspan]="canEdit() ? 3 : 2" class="categories__empty">Ничего не найдено</td>
+        </tr>
+      }
+    </ng-template>
+  </p-table>
+
+  @if (loading()) {
+    <div class="categories__loading">
+      <p-progressspinner strokeWidth="4" [style]="{ width: '36px', height: '36px' }" />
+    </div>
+  }
+
+  @if (error()) {
+    <div class="categories__error">
+      <span>{{ error() }}</span>
+      <p-button label="Повторить" severity="secondary" [text]="true" (onClick)="retry()" />
+    </div>
+  }
+
+  <!-- Сентинел для бесконечной прокрутки (страничный скролл вьюпорта) -->
+  <div #sentinel class="categories__sentinel" aria-hidden="true"></div>
+</section>
+
+<!-- Маршрутизируемые модалки Add/Edit -->
+<router-outlet />

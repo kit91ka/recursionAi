@@ -1,0 +1,35 @@
+# === Секреты / окружение ===
+environment.ts
+*.env
+.env
+.env.*
+!.env.example
+
+# === Node / сборка (на случай артефактов в корне) ===
+node_modules/
+dist/
+tmp/
+out-tsc/
+/.angular/cache
+coverage/
+
+# === IDE ===
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# === Claude Code (локальные/персональные) ===
+.claude/settings.local.json
+
+# === Тесты / Playwright ===
+test-results/
+playwright-report/
+.last-run.json
+
+# === Логи ===
+npm-debug.log
+yarn-error.log
+*.log

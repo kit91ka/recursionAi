@@ -1,0 +1,394 @@
+================================================================================
+ ДЕТАЛЬНЫЙ ПЛАН РЕАЛИЗАЦИИ — «Справочник категорий» (Zidium Front)
+ Дата: 2026-06-04
+ Источники: project.txt (ТЗ) + Figma (canvas «Task for AI», 1508:21270) + Swagger (/front)
+================================================================================
+
+--------------------------------------------------------------------------------
+0. КРАТКОЕ РЕЗЮМЕ
+--------------------------------------------------------------------------------
+Нужно сделать SPA на Angular с авторизацией по JWT и справочником категорий
+(CRUD): список с поиском/сортировкой/бесконечной прокруткой, добавление,
+просмотр/редактирование, удаление с подтверждением.
+
+Стек (обоснование ниже):
+  - Angular (latest stable, standalone, signals) — поднимать через `npx @angular/cli`.
+  - PrimeNG + PrimeIcons — макет нарисован под PrimeNG (слои datatable/input/
+    overlay/dialog). Тема настраивается под токены Figma.
+  - OpenAPI-генератор клиента из Swagger backend (требование ТЗ).
+  - Управление состоянием — сервисы на signals (без NgRx, объём не требует).
+
+Backend:
+  - Base URL: https://zidium3-backend.zidium.net/
+  - OpenAPI (Front): https://zidium3-backend.zidium.net/swagger/front/swagger.json
+  - Тестовый пользователь: test / 77777
+
+--------------------------------------------------------------------------------
+1. РАСХОЖДЕНИЯ ТЗ ↔ МАКЕТ ↔ API (важно согласовать до старта)
+--------------------------------------------------------------------------------
+1.1 Поля справочника.
+    - ТЗ: для /categories поля «Id» и «Name».
+    - Макет: колонки «Name» и «Description» (+ Description в модалках).
+    - API CategoryDto = { id:int, name:string } — поля Description НЕТ.
+    => РЕШЕНИЕ: следуем ТЗ + API. Колонки: Id, Name. Поле Description НЕ реализуем
+       (макет обобщённый — «у каждого справочника свои поля», прямо сказано в ТЗ).
+       В модалке Add/Edit: Id (текст, readonly, только в Edit) + Name (input).
+
+1.2 Колонка Id в списке.
+    - ТЗ перечисляет поля «Id» и «Name». Макет Id-колонку не показывает.
+    => РЕШЕНИЕ: показываем обе колонки (Id, Name) по ТЗ. Сортировка — по Name
+       (в API только sortDesc, без выбора поля — значит сортировка идёт по Name).
+
+1.3 Редактирование: страница vs модалка.
+    - ТЗ: «Url в браузере: /categories/{id}» (отдельный маршрут).
+    - Макет: модальное окно поверх списка.
+    => РЕШЕНИЕ: маршрутизируемая модалка — отдельный route /categories/:id и
+       /categories/new, который открывает PrimeNG Dialog поверх списка. Так
+       выполняется требование ТЗ к URL и сохраняется вид макета. Реализуется
+       через дочерние маршруты с отдельным <router-outlet> или через резолв id
+       в самом списке.
+
+1.4 Тексты ошибок входа.
+    - Макет показывает «User is blocked» (частный случай) и «Field is required».
+    => РЕШЕНИЕ: «Field is required» — клиентская валидация required. Текст ошибки
+       входа берём из ответа API (message), если его нет — дефолт. Не хардкодим
+       «User is blocked» как единственный вариант.
+
+1.5 pageSize.
+    - В ТЗ размер страницы явно не задан, в API есть параметр pageSize.
+    => РЕШЕНИЕ: ввести константу PAGE_SIZE (например 50). Грузить, пока
+       items.length === pageSize. Согласовать значение при ревью.
+
+--------------------------------------------------------------------------------
+2. ДИЗАЙН-ТОКЕНЫ (из Figma)
+--------------------------------------------------------------------------------
+Цвета:
+  --color-primary      #005baa   (кнопки Logon/Save, активные иконки меню)
+  --color-primary-text #ffffff
+  --color-danger       #a9120a   (кнопка Delete)
+  --color-neutral-bg   #f4f4f5   (кнопка Close)
+  --color-text         #263238   (основной текст, заголовки)
+  --color-muted        #677379 / #75787f   (иконки)
+  --color-placeholder  #dee2e6
+  --color-table-head   #f9fafc
+  --color-error        #e91e63 / красный  (рамка и текст «Field is required»)
+  --color-surface      #ffffff
+Радиусы:  кнопки/инпуты = 8px;  карточки/таблица = 10px.
+Шрифт:    Roboto. Размеры: 14/400 — тело; 14/500 — кнопки, заголовки колонок;
+          18/500 — заголовок страницы «Categories»; ~24/500 — «Logon to Zidium».
+Сетка:    левое вертикальное меню ~78px (иконки), контент с отступом.
+
+--------------------------------------------------------------------------------
+3. АРХИТЕКТУРА И СТРУКТУРА ПРОЕКТА
+--------------------------------------------------------------------------------
+src/
+  app/
+    app.config.ts            # provideRouter, provideHttpClient(withInterceptors),
+                             #   provideAnimations, PrimeNG provideAnimationsAsync, тема
+    app.routes.ts            # корневые маршруты (см. раздел 6)
+    app.component.ts/html    # корневой <router-outlet>
+
+    core/
+      api/                   # СГЕНЕРИРОВАННЫЙ OpenAPI-клиент (не редактировать руками)
+        ...                  #   CategoriesService, LogonService, модели DTO, configuration
+      auth/
+        token-storage.ts     # чтение/запись token+refreshToken (localStorage), signal-обёртка
+        auth.service.ts      # logon(), logout(), refresh(), currentUser signal, isAuthenticated
+        auth.interceptor.ts  # функциональный: добавляет Authorization, ловит 401 -> refresh -> retry
+        auth.guard.ts        # CanMatch/CanActivate: пускает только авторизованных
+        api-base.interceptor.ts # подставляет base URL backend (или через OpenAPI Configuration)
+      config/
+        environment.ts       # apiBaseUrl; (figma-токен убрать из рантайма фронта — он не нужен в проде)
+        constants.ts         # PAGE_SIZE, debounce-тайминги, ключи storage
+
+    shared/
+      ui/                    # обёртки/переиспользуемые презентационные компоненты при необходимости
+      validators/
+        name-exists.validator.ts  # асинхронный валидатор (GET name-exists)
+
+    features/
+      auth/
+        login.page.ts/html/css     # экран «Logon to Zidium» + состояния ошибок
+      categories/
+        categories-list.page.ts/html/css   # /categories: таблица, поиск, сортировка, infinite scroll
+        category-edit.dialog.ts/html/css   # модалка Add/Edit (маршрутизируемая)
+        category-delete.dialog.ts          # подтверждение удаления (PrimeNG ConfirmDialog)
+        categories.store.ts                # signal-стор: items, canEdit, search, sortDesc,
+                                           #   pageNumber, loading, hasMore + методы load/reset
+        categories.facade.ts (опц.)        # тонкая обёртка над сгенерированным CategoriesService
+
+Принципы (из ecc:angular-developer + coding-style):
+  - Только standalone-компоненты, без NgModule.
+  - DI через inject(), без конструкторной инъекции.
+  - Состояние — signal()/computed(); побочные эффекты — минимально, не для derived-стейта.
+  - Шаблоны — новый control flow (@if/@for/@switch), trackBy по id.
+  - Функциональные интерсепторы и гварды (HttpInterceptorFn, CanMatchFn).
+  - Иммутабельные обновления состояния (spread), без мутаций.
+  - Файлы < 400 строк, функции < 50 строк.
+
+--------------------------------------------------------------------------------
+4. ГЕНЕРАЦИЯ API-КЛИЕНТА (требование ТЗ: openapi-generator-cli)
+--------------------------------------------------------------------------------
+4.1 Зависимость (npm-обёртка официального генератора, нужна Java — есть, JDK 25):
+      npm i -D @openapitools/openapi-generator-cli
+4.2 Конфиг openapitools.json: зафиксировать версию генератора.
+4.3 Скрипт в package.json:
+      "gen:api": "openapi-generator-cli generate \
+        -i https://zidium3-backend.zidium.net/swagger/front/swagger.json \
+        -g typescript-angular \
+        -o src/app/core/api \
+        --additional-properties=ngVersion=<версия>,withInterfaces=true,\
+           providedInRoot=true,fileNaming=kebab-case,useSingleRequestParameter=true"
+    Альтернатива: брать локально сохранённый swagger_front.json как -i (стабильнее в CI).
+4.4 После генерации:
+      - провайдить Configuration с basePath = environment.apiBaseUrl;
+      - сгенерированные сервисы: LogonService, CategoriesService (имена уточнить после генерации);
+      - DTO: LogonRequestDto, LogonResponseDto, TokensResponseDto, RefreshTokenRequestDto,
+        CategoryDto, CategoryListDto, EditCategoryDto, CurrentUserDto.
+4.5 Папку core/api пометить как генерируемую (не править вручную; при изменении API — regen).
+
+--------------------------------------------------------------------------------
+5. КОНТРАКТЫ API (точно из swagger_front.json)
+--------------------------------------------------------------------------------
+Авторизация:
+  POST /front/logon
+       body LogonRequestDto { login, password }
+       200  LogonResponseDto { token, refreshToken, user: { displayName, timezoneOffset } }
+  POST /front/logon/refresh-token
+       body RefreshTokenRequestDto { refreshToken }
+       200  TokensResponseDto { token, refreshToken }
+  GET  /front/logon/current-user -> CurrentUserDto  (для шапки/проверки сессии)
+
+Все методы ниже требуют заголовок Authorization: Bearer <token>.
+
+Категории:
+  GET    /front/categories?search=&pageSize=&pageNumber=&sortDesc=
+         200 CategoryListDto { items: CategoryDto[], canEdit: bool }
+         (pageNumber начинается с 0; total в ответе НЕТ — пагинация по длине items)
+  GET    /front/categories/{id} -> CategoryDto { id, name }
+  POST   /front/categories            body EditCategoryDto { name }  -> 200 int (новый id)
+  POST   /front/categories/{id}       body EditCategoryDto { name }  -> 200 (void)
+  DELETE /front/categories/{id}       -> 200 (void)
+  GET    /front/categories/name-exists?id=&name=  -> bool
+         (id = текущая запись или null/пусто при добавлении; true => имя занято => невалидно)
+
+--------------------------------------------------------------------------------
+6. МАРШРУТИЗАЦИЯ
+--------------------------------------------------------------------------------
+app.routes.ts:
+  { path: 'login', loadComponent: LoginPage }
+  { path: '', canMatch: [authGuard], component: ShellLayout, children: [
+      { path: 'categories', component: CategoriesListPage, children: [
+          { path: 'new', component: CategoryEditDialog },   // модалка добавления
+          { path: ':id', component: CategoryEditDialog },   // модалка просмотра/редактирования
+      ]},
+      { path: '', redirectTo: 'categories', pathMatch: 'full' },
+  ]}
+  { path: '**', redirectTo: '' }
+
+  - authGuard (CanMatchFn): нет валидного токена -> redirect на /login.
+  - Дочерние маршруты categories/new и categories/:id рендерят Dialog поверх
+    списка через вложенный <router-outlet> внутри CategoriesListPage.
+  - Закрытие модалки = навигация назад на /categories.
+
+--------------------------------------------------------------------------------
+7. АВТОРИЗАЦИЯ (JWT) — детально
+--------------------------------------------------------------------------------
+7.1 TokenStorage: хранит token, refreshToken в localStorage; экспонирует signal
+    token() для реактивности; clear() при logout.
+7.2 AuthService:
+      - logon(login, password): POST /front/logon -> сохранить токены и user;
+        вернуть Observable/Promise; ошибки прокинуть для показа в форме.
+      - refresh(): POST /front/logon/refresh-token c refreshToken -> обновить токены;
+        при провале -> logout() + redirect /login.
+      - logout(): очистить storage, redirect /login.
+      - currentUser: signal<CurrentUserDto | null>.
+      - isAuthenticated: computed по наличию token.
+7.3 authInterceptor (HttpInterceptorFn):
+      - добавляет Authorization: Bearer <token> ко всем запросам к backend
+        (кроме /front/logon и /front/logon/refresh-token);
+      - на 401: запустить refresh (с защитой от параллельных рефрешей —
+        общий inFlight$ / шаринг), затем повторить исходный запрос с новым токеном;
+      - если refresh упал -> logout.
+7.4 authGuard (CanMatchFn): isAuthenticated ? true : router.parseUrl('/login').
+7.5 Безопасность:
+      - токены не логировать;
+      - Figma-токен из environment.ts НЕ тащить во фронтовый бандл прода
+        (он использовался только на этапе анализа макета).
+
+--------------------------------------------------------------------------------
+8. ЭКРАН ВХОДА (/login) — макеты: Авторизация / …Не заполнено / …Ошибка входа
+--------------------------------------------------------------------------------
+Вид: карточка по центру экрана (radius 10, тень), заголовок «Logon to Zidium»
+     (~24/500), поля «Login» и «Password» (PrimeNG InputText / Password),
+     синяя кнопка «Logon» (#005baa) по центру.
+Поведение:
+  - ReactiveForm: login (required), password (required).
+  - Сабмит при невалидной форме -> показать под каждым пустым полем
+    «Field is required», добавить красную рамку (p-invalid / ng-invalid).
+  - Успешный логин -> сохранить токены -> redirect на returnUrl или /categories.
+  - Ошибка входа от сервера -> показать сообщение над кнопкой красным
+    (текст из ответа API, напр. «User is blocked»; дефолт при отсутствии).
+  - На время запроса — блокировка кнопки/спиннер.
+  - Если уже авторизован — guard на /login уводит на /categories (опционально).
+Состояния из макета: пустые поля (Field is required), серверная ошибка (красный текст).
+
+--------------------------------------------------------------------------------
+9. ЭКРАН СПИСКА (/categories) — макет «Справочник»
+--------------------------------------------------------------------------------
+Заголовок «Categories» (18/500). Справа сверху — кнопка «+ Add»
+(иконка plus + текст), видна только при canEdit=true. Под заголовком — строка
+поиска «Search» (PrimeNG IconField + InputText с иконкой лупы). Ниже — таблица
+(PrimeNG Table) с колонками:
+   - Id  (по ТЗ)
+   - Name (кликабельный заголовок -> переключение sortDesc)
+   - [действие] иконка-корзина в строке (видна только при canEdit) -> удаление
+Строка кликабельна -> переход на /categories/:id (просмотр/редактирование).
+
+9.1 Бесконечная прокрутка (по ТЗ):
+   - Грузим страницы pageNumber=0,1,2… с PAGE_SIZE.
+   - Запрашиваем следующую, пока вернувшееся число строк === PAGE_SIZE
+     («или если ещё осталось место на странице» — догрузка, если контент
+     не заполнил вьюпорт). Когда вернулось меньше PAGE_SIZE — hasMore=false.
+   - Реализация: PrimeNG Table virtualScroll/lazy ИЛИ IntersectionObserver на
+     «сентинел» в конце списка. Предпочтительно IntersectionObserver — точно под
+     требование «догружать пока есть место».
+   - Защита от гонок: не стартовать новый запрос, пока идёт текущий (loading).
+
+9.2 Поиск:
+   - Поле search -> debounce (~300 мс) -> сброс пагинации (pageNumber=0, items=[])
+     -> перезагрузка с параметром search.
+   - Использовать signal + toSignal/effect или RxJS debounceTime на valueChanges.
+
+9.3 Сортировка:
+   - Клик по заголовку «Name» -> инверсия sortDesc (изначально false)
+     -> сброс пагинации -> перезагрузка. Индикатор направления в заголовке.
+
+9.4 canEdit=false:
+   - Скрыть «+ Add», иконки удаления, кнопку Save в модалке (всё редактирование).
+   - Просмотр записи остаётся доступным (поля readonly).
+
+9.5 Состояния: загрузка (skeleton/spinner), пусто («ничего не найдено»),
+    ошибка загрузки (сообщение + повтор).
+
+9.6 categories.store.ts (signal-стор):
+    state: { items, canEdit, search, sortDesc, pageNumber, loading, hasMore, error }
+    методы: loadNextPage(), reload() (сброс+первая страница),
+            setSearch(v), toggleSort(), removeFromList(id), upsert(item).
+
+--------------------------------------------------------------------------------
+10. ДОБАВЛЕНИЕ / РЕДАКТИРОВАНИЕ (модалка) — макеты «Add» / «Edit»
+--------------------------------------------------------------------------------
+Одна маршрутизируемая модалка CategoryEditDialog на два режима:
+  - /categories/new  -> режим Add  (заголовок «Add»),  Id скрыт.
+  - /categories/:id  -> режим Edit (заголовок «Edit»), Id показан как текст (readonly).
+Вид (PrimeNG Dialog поверх затемнения):
+  - Заголовок + крестик закрытия (X).
+  - Поле «Id» (только Edit): текст, НЕ input (по ТЗ).
+  - Поле «Name»: InputText.
+  - Кнопки: «Close» (нейтральная #f4f4f5) и «Save» (синяя #005baa).
+Поведение:
+  - Edit: при открытии GET /front/categories/{id} -> заполнить форму.
+  - Форма: name (required + асинхронная валидация name-exists).
+  - Save:
+      Add  -> POST /front/categories { name } -> получить новый id ->
+              обновить список (upsert) -> закрыть модалку (навигация /categories).
+      Edit -> POST /front/categories/{id} { name } -> обновить список -> закрыть.
+  - Close / крестик / клик по затемнению -> навигация назад на /categories.
+  - Save заблокирована, пока форма невалидна или идёт сохранение/валидация.
+  - canEdit=false (для записи): все поля readonly, кнопка Save скрыта,
+    остаётся только Close (режим просмотра).
+
+10.1 Асинхронная валидация Name (по ТЗ):
+   - AsyncValidator nameExistsValidator(currentId | null):
+       GET /front/categories/name-exists?id={id|пусто}&name={value}
+       true  -> ошибка { nameTaken: true } («название уже занято»);
+       false -> валидно.
+   - Дебаунс перед запросом (~300-400 мс), отмена предыдущего запроса
+     (switchMap), индикатор «проверка…».
+   - id = id текущей записи (Edit) или null/пусто (Add).
+   - Пустое имя сначала отсекается required (валидатор name-exists не дёргаем).
+
+--------------------------------------------------------------------------------
+11. УДАЛЕНИЕ — макет «Удаление» (Confirmation)
+--------------------------------------------------------------------------------
+   - Клик по иконке-корзине в строке (или Delete в режиме просмотра) ->
+     модалка подтверждения (PrimeNG ConfirmDialog / Dialog):
+       заголовок «Confirmation», текст «Sure to delete this element?»,
+       кнопки «Close» (нейтр.) и «Delete» (красная #a9120a).
+   - Подтверждение -> DELETE /front/categories/{id} ->
+     убрать строку из списка (removeFromList) -> закрыть модалку.
+   - Ошибка удаления -> показать сообщение (toast), список не менять.
+   - Иконка удаления и весь флоу скрыты при canEdit=false.
+
+--------------------------------------------------------------------------------
+12. ТЕМА / СТИЛИ
+--------------------------------------------------------------------------------
+   - Подключить PrimeNG + PrimeIcons, шрифт Roboto.
+   - Настроить тему (PrimeNG v18+ — токены через @primeng/themes preset, либо
+     CSS-переменные) под значения раздела 2.
+   - Левое меню (78px, иконки) — статичный layout-компонент ShellLayout
+     (иконки: список/дерево, шестерёнка-настройки активна, профиль, выход снизу).
+     По ТЗ это вне CRUD, но присутствует в макете — сделать каркасно.
+   - Глобальные токены в styles.css (:root { --color-* }), без хардкода цветов
+     по компонентам.
+
+--------------------------------------------------------------------------------
+13. ТЕСТИРОВАНИЕ (цель >= 80%)
+--------------------------------------------------------------------------------
+Unit:
+   - AuthService: logon (успех/ошибка), refresh, logout.
+   - authInterceptor: добавление заголовка; 401 -> refresh -> retry; провал refresh.
+   - nameExistsValidator: занято/свободно, отмена предыдущего запроса.
+   - categories.store: пагинация (стоп при len<PAGE_SIZE), search-сброс, toggleSort,
+     remove/upsert (иммутабельность).
+Component (TestBed + harness):
+   - LoginPage: «Field is required» при пустом сабмите; показ серверной ошибки.
+   - CategoriesListPage: рендер строк, клик по Name -> sort, скрытие Add/Delete
+     при canEdit=false.
+   - CategoryEditDialog: режимы Add/Edit, блокировка Save, readonly при canEdit=false.
+E2E (Playwright), критические потоки:
+   - Логин (test/77777) -> список.
+   - Поиск + сортировка + догрузка при скролле.
+   - Add -> запись появляется; Edit -> имя меняется; Delete с подтверждением.
+   - Валидация занятого имени.
+
+--------------------------------------------------------------------------------
+14. ПЛАН РАБОТ ПО ФАЗАМ
+--------------------------------------------------------------------------------
+Фаза 0. Каркас
+   - npx @angular/cli new (standalone, routing, css), структура папок раздела 3.
+   - Подключить PrimeNG/PrimeIcons/Roboto, тему-токены.
+   - environment (apiBaseUrl), constants (PAGE_SIZE).
+Фаза 1. API-клиент
+   - Установить @openapitools/openapi-generator-cli, скрипт gen:api, сгенерировать
+     core/api из swagger_front.json, провайдить Configuration(basePath).
+Фаза 2. Авторизация
+   - TokenStorage, AuthService, authInterceptor (+refresh), authGuard, LoginPage
+     со всеми состояниями. Проверить вход test/77777.
+Фаза 3. Список
+   - ShellLayout (меню), CategoriesListPage, categories.store, таблица (Id/Name),
+     поиск (debounce), сортировка, бесконечная прокрутка, canEdit-логика.
+Фаза 4. Add/Edit
+   - Маршрутизируемая модалка, GET by id, name-exists async-валидатор,
+     POST add/update, upsert в список, режим просмотра (readonly).
+Фаза 5. Delete
+   - Модалка подтверждения, DELETE, удаление из списка, toast ошибок.
+Фаза 6. Полировка и тесты
+   - Сверка со всеми 7 макетами (пиксель-токены), пустые/ошибочные состояния,
+     a11y (лейблы, фокус, клавиатура), unit/component/e2e до >=80%, ng build без ошибок.
+
+--------------------------------------------------------------------------------
+15. РИСКИ / ОТКРЫТЫЕ ВОПРОСЫ (согласовать)
+--------------------------------------------------------------------------------
+   - Точное значение PAGE_SIZE (предлагается 50).
+   - Показывать ли колонку Id в списке (ТЗ — да; макет — нет). Предлагается да.
+   - Edit как отдельный URL-маршрут + модалка (принято) — подтвердить.
+   - Точные тексты ошибок входа (брать из API).
+   - Имена сгенерированных сервисов/методов уточнятся после первой генерации.
+   - Нужен ли полноценный ShellLayout (меню) или только каркас под CRUD.
+   - CORS: проверить, что backend разрешает запросы с dev-origin; иначе proxy.conf.json.
+
+================================================================================
+ КОНЕЦ ПЛАНА
+================================================================================

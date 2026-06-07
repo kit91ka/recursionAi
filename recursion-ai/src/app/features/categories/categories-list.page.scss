@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+.categories {
+  // Полноширинный плоский лейаут по макету (Figma node 476-11408), без карточки.
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--text-title);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  &__search {
+    margin-bottom: 1.25rem;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__col-id {
+    width: 96px;
+  }
+
+  &__col-actions {
+    width: 48px;
+    text-align: right;
+  }
+
+  &__delete {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+    line-height: 1;
+
+    i {
+      font-size: 16px;
+    }
+
+    &:hover {
+      color: var(--color-danger);
+    }
+  }
+
+  &__sortable {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__row {
+    cursor: pointer;
+  }
+
+  &__empty {
+    text-align: center;
+    color: var(--color-muted);
+    padding: 1.5rem;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: var(--color-danger);
+    padding: 1rem;
+  }
+
+  &__sentinel {
+    height: 1px;
+  }
+}
