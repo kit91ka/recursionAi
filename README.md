@@ -81,6 +81,7 @@ recursionAi/
 | [plan.txt](./plan.txt) | Детальный план реализации, дизайн-токены, архитектура |
 | [checklist.md](./checklist.md) | Чеклист приёмки — отмечается по мере готовности |
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | Процесс разработки по этапам со скриншотами |
+| [PROCESS.md](./PROCESS.md) | Хронология разработки по сессиям + карта артефактов |
 | [conversation.md](./conversation.md) | Лог переписки по сессиям |
 
 ---
