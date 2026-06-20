@@ -1,0 +1,45 @@
+<div class="shell">
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <ul class="sidebar-top">
+        <li>
+          <a routerLink="/categories" class="sidebar-icon" title="Toggle">
+            <i class="pi pi-bars"></i>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/categories" class="sidebar-icon" title="Sitemap">
+            <i class="pi pi-sitemap"></i>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/categories"
+            routerLinkActive="active"
+            class="sidebar-icon"
+            title="Settings"
+          >
+            <i class="pi pi-cog"></i>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="sidebar-bottom">
+        <li>
+          <a class="sidebar-icon" title="Profile">
+            <i class="pi pi-user"></i>
+          </a>
+        </li>
+        <li>
+          <a class="sidebar-icon" title="Logout" (click)="logout(); $event.preventDefault()">
+            <i class="pi pi-sign-out"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

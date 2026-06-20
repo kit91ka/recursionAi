@@ -1,50 +1,49 @@
-<div class="login-screen">
-  <form class="login-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <h1 class="login-card__title">Logon to Zidium</h1>
+<div class="login-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <p-card [style]="{ width: '439px' }">
+      <h2 class="card-title">Logon to Zidium</h2>
 
-    <div class="login-field">
-      <label for="login">Login</label>
-      <input
-        pInputText
-        fluid
-        id="login"
-        formControlName="login"
-        autocomplete="username"
-        [class.ng-invalid]="submitted() && form.controls.login.invalid"
-        [class.ng-dirty]="submitted() && form.controls.login.invalid"
-      />
-      @if (submitted() && form.controls.login.errors?.['required']) {
-        <small class="login-field__error">Field is required</small>
+      <p-fluid>
+        <div class="field">
+          <label for="login">Login</label>
+          <input
+            id="login"
+            type="text"
+            pInputText
+            formControlName="login"
+            autocomplete="username"
+            [class.ng-invalid]="form.get('login')?.invalid && form.get('login')?.touched"
+          />
+          @if (form.get('login')?.invalid && form.get('login')?.touched) {
+            <small class="p-error">Field is required</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            autocomplete="current-password"
+            [feedback]="false"
+            [class.ng-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          />
+          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+            <small class="p-error">Field is required</small>
+          }
+        </div>
+      </p-fluid>
+
+      @if (serverError()) {
+        <small class="p-error server-error">{{ serverError() }}</small>
       }
-    </div>
-
-    <div class="login-field">
-      <label for="password">Password</label>
-      <p-password
-        inputId="password"
-        formControlName="password"
-        fluid
-        [feedback]="false"
-        [toggleMask]="true"
-        autocomplete="current-password"
-        [inputStyleClass]="
-          (submitted() && form.controls.password.invalid) || serverError()
-            ? 'ng-invalid ng-dirty'
-            : ''
-        "
+      <p-button
+        type="submit"
+        label="Logon"
+        [loading]="loading"
+        [disabled]="form.invalid || loading"
+        [style]="{ width: '100%' }"
       />
-      @if (submitted() && form.controls.password.errors?.['required']) {
-        <small class="login-field__error">Field is required</small>
-      } @else if (serverError()) {
-        <small class="login-field__error">{{ serverError() }}</small>
-      }
-    </div>
-
-    <p-button
-      type="submit"
-      label="Logon"
-      styleClass="login-card__submit"
-      [loading]="loading()"
-    />
+    </p-card>
   </form>
 </div>

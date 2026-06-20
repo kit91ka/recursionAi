@@ -1,37 +1,21 @@
-import { HttpContext } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { catchError, first, map, Observable, of, switchMap, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Observable, of, switchMap } from 'rxjs';
+import { CategoriesService } from '../../core/api/api/categories.service';
+import { NAME_VALIDATOR_DEBOUNCE } from '../../core/config/constants';
 
-import { CategoriesService } from '../../core/api';
-import { NAME_VALIDATION_DEBOUNCE_MS } from '../../core/config/constants';
-import { SKIP_ERROR_TOAST } from '../../core/http/error.interceptor';
+export function nameExistsValidator(currentId: number | null): AsyncValidatorFn {
+  const api = inject(CategoriesService);
 
-/**
- * Асинхронный валидатор уникальности имени категории.
- * GET /front/categories/name-exists?id=&name= → true означает «занято».
- * Debounce + switchMap (отмена предыдущего запроса), пустое имя пропускаем (его ловит required).
- *
- * @param api сгенерированный CategoriesService
- * @param getCurrentId id текущей записи (Edit) или null (Add)
- */
-export function nameExistsValidator(
-  api: CategoriesService,
-  getCurrentId: () => number | null,
-): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    const name = (control.value ?? '').trim();
-    if (!name) {
-      return of(null);
-    }
+    const name = control.value?.trim();
+    if (!name) return of(null);
 
-    const id = getCurrentId();
-    // Фоновая проверка: глушим глобальный toast, ошибку гасим локально (of(null)).
-    const context = new HttpContext().set(SKIP_ERROR_TOAST, true);
-    return timer(NAME_VALIDATION_DEBOUNCE_MS).pipe(
-      switchMap(() => api.nameExists({ name, id: id ?? undefined }, 'body', false, { context })),
+    return of(name).pipe(
+      debounceTime(NAME_VALIDATOR_DEBOUNCE),
+      distinctUntilChanged(),
+      switchMap((n) => api.nameExists(n, currentId ?? undefined)),
       map((exists) => (exists ? { nameTaken: true } : null)),
-      catchError(() => of(null)),
-      first(),
     );
   };
 }

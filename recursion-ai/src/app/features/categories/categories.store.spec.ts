@@ -1,109 +1,270 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-
-import { CategoriesService } from '../../core/api';
-import { Category } from '../../core/api-types';
-import { PAGE_SIZE } from '../../core/config/constants';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CategoriesStore } from './categories.store';
-
-function makeItems(count: number, startId = 1): Category[] {
-  return Array.from({ length: count }, (_, i) => ({ id: startId + i, name: `c${startId + i}` }));
-}
+import { ZidiumWebServiceFrontCategoryListDto } from '../../core/api/model/zidiumWebServiceFrontCategoryListDto.model';
+import { ZidiumWebServiceFrontCategoryDto } from '../../core/api/model/zidiumWebServiceFrontCategoryDto.model';
 
 describe('CategoriesStore', () => {
   let store: CategoriesStore;
-  let api: jasmine.SpyObj<CategoriesService>;
+  let httpMock: HttpTestingController;
+
+  const mockItem = (id: number, name: string): ZidiumWebServiceFrontCategoryDto => ({
+    id,
+    name,
+    canEdit: true,
+    canDelete: true,
+  });
 
   beforeEach(() => {
-    api = jasmine.createSpyObj<CategoriesService>('CategoriesService', ['getAll']);
     TestBed.configureTestingModule({
-      providers: [CategoriesStore, { provide: CategoriesService, useValue: api }],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
+
     store = TestBed.inject(CategoriesStore);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('loads first page and sets canEdit', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(PAGE_SIZE), canEdit: true }) as any);
+  afterEach(() => {
+    httpMock.verify();
+  });
 
-    store.reload();
+  it('should be created', () => {
+    expect(store).toBeTruthy();
+  });
 
-    expect(store.items().length).toBe(PAGE_SIZE);
+  it('should have initial empty state', () => {
+    expect(store.items()).toEqual([]);
     expect(store.canEdit()).toBeTrue();
+    expect(store.search()).toBe('');
+    expect(store.sortDesc()).toBeFalse();
+    expect(store.loading()).toBeFalse();
     expect(store.hasMore()).toBeTrue();
+    expect(store.error()).toBeNull();
   });
 
-  it('stops pagination when returned items fewer than PAGE_SIZE', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(PAGE_SIZE - 1), canEdit: false }) as any);
+  describe('loadPage', () => {
+    it('should load first page and set items', () => {
+      const list: ZidiumWebServiceFrontCategoryListDto = {
+        items: [mockItem(1, 'A'), mockItem(2, 'B')],
+        canAdd: true,
+      };
 
-    store.reload();
+      let result: void | undefined;
+      store.loadPage().subscribe((r) => (result = r));
 
-    expect(store.hasMore()).toBeFalse();
-    store.loadNextPage();
-    // второй вызов не должен ничего грузить (hasMore=false)
-    expect(api.getAll).toHaveBeenCalledTimes(1);
+      const req = httpMock.expectOne(
+        (r) => r.method === 'GET' && r.url.endsWith('/front/categories'),
+      );
+      expect(req.request.params.get('pageSize')).toBe('10');
+      expect(req.request.params.get('pageNumber')).toBe('0');
+      req.flush(list);
+
+      expect(result).toBeUndefined();
+      expect(store.items()).toEqual(list.items);
+      expect(store.canEdit()).toBeTrue();
+      expect(store.hasMore()).toBeFalse(); // 2 < 10
+      expect(store.loading()).toBeFalse();
+      expect(store.error()).toBeNull();
+    });
+
+    it('should append items on subsequent pages', () => {
+      const page0: ZidiumWebServiceFrontCategoryListDto = {
+        items: Array.from({ length: 10 }, (_, i) => mockItem(i, `Item-${i}`)),
+        canAdd: true,
+      };
+
+      store.loadPage().subscribe();
+      httpMock.expectOne((r) => r.url.endsWith('/front/categories')).flush(page0);
+      expect(store.items().length).toBe(10);
+      expect(store.hasMore()).toBeTrue();
+
+      const page1: ZidiumWebServiceFrontCategoryListDto = {
+        items: [mockItem(10, 'Item-10')],
+        canAdd: true,
+      };
+
+      store.loadPage().subscribe();
+      httpMock.expectOne((r) => r.url.endsWith('/front/categories')).flush(page1);
+      expect(store.items().length).toBe(11);
+      expect(store.hasMore()).toBeFalse();
+    });
+
+    it('should skip loading when already loading', () => {
+      store.loadPage().subscribe();
+
+      // Second call should not trigger HTTP request
+      let called = false;
+      store.loadPage().subscribe(() => (called = true));
+
+      httpMock.expectOne((r) => r.url.endsWith('/front/categories')); // only one request
+      expect(called).toBeTrue();
+    });
+
+    it('should skip loading when hasMore is false', () => {
+      store.loadPage().subscribe();
+      httpMock
+        .expectOne((r) => r.url.endsWith('/front/categories'))
+        .flush({
+          items: Array.from({ length: 10 }, (_, i) => mockItem(i, `Item-${i}`)),
+          canAdd: true,
+        });
+
+      // force hasMore to false via empty page
+      store.setSearch('test');
+      store.loadPage().subscribe();
+      httpMock
+        .expectOne((r) => r.url.endsWith('/front/categories'))
+        .flush({
+          items: [],
+          canAdd: true,
+        });
+      expect(store.hasMore()).toBeFalse();
+
+      let emitted = false;
+      store.loadPage().subscribe(() => (emitted = true));
+      expect(emitted).toBeTrue();
+    });
+
+    it('should handle error response', () => {
+      store.loadPage().subscribe();
+
+      const req = httpMock.expectOne((r) => r.url.endsWith('/front/categories'));
+      req.flush({ detail: 'Server error' }, { status: 500, statusText: 'Internal Server Error' });
+
+      expect(store.error()).toBe('Server error');
+      expect(store.loading()).toBeFalse();
+    });
   });
 
-  it('appends next page items immutably', () => {
-    api.getAll.and.returnValues(
-      of({ items: makeItems(PAGE_SIZE, 1), canEdit: true }) as any,
-      of({ items: makeItems(2, PAGE_SIZE + 1), canEdit: true }) as any,
-    );
+  describe('setSearch', () => {
+    it('should set search value and reset pagination', () => {
+      // Pre-populate some items
+      store['items'].set([mockItem(1, 'A')]);
+      store['pageNumber'] = 3;
+      store['hasMore'].set(false);
 
-    store.reload();
-    const firstRef = store.items();
-    store.loadNextPage();
+      store.setSearch('test');
 
-    expect(store.items().length).toBe(PAGE_SIZE + 2);
-    expect(store.items()).not.toBe(firstRef);
+      expect(store.search()).toBe('test');
+      expect(store.items()).toEqual([]);
+      expect(store['pageNumber']).toBe(0);
+      expect(store.hasMore()).toBeTrue();
+    });
   });
 
-  it('resets pagination on new search', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(2), canEdit: true }) as any);
-    store.reload();
+  describe('toggleSort', () => {
+    it('should toggle sort direction and reset', () => {
+      store['items'].set([mockItem(1, 'A')]);
+      store['pageNumber'] = 2;
 
-    store.setSearch('foo');
+      store.toggleSort();
 
-    expect(api.getAll).toHaveBeenCalledTimes(2);
-    const lastArgs = api.getAll.calls.mostRecent().args[0];
-    expect(lastArgs?.search).toBe('foo');
-    expect(lastArgs?.pageNumber).toBe(0);
+      expect(store.sortDesc()).toBeTrue();
+      expect(store.items()).toEqual([]);
+      expect(store['pageNumber']).toBe(0);
+
+      store.toggleSort();
+      expect(store.sortDesc()).toBeFalse();
+    });
   });
 
-  it('does not reload when search value is unchanged', () => {
-    api.getAll.and.returnValue(of({ items: [], canEdit: true }) as any);
-    store.setSearch('');
-    expect(api.getAll).not.toHaveBeenCalled();
+  describe('save', () => {
+    it('should call add and reload when no id provided', () => {
+      store.save('NewCategory').subscribe();
+
+      const req = httpMock.expectOne(
+        (r) => r.method === 'POST' && r.url.endsWith('/front/categories'),
+      );
+      expect(req.request.body).toEqual({ name: 'NewCategory' });
+      req.flush(1);
+
+      const reloadReq = httpMock.expectOne(
+        (r) => r.method === 'GET' && r.url.endsWith('/front/categories'),
+      );
+      reloadReq.flush({ items: [mockItem(1, 'NewCategory')], canAdd: true });
+    });
+
+    it('should call update when id provided', () => {
+      store.save('Updated', 5).subscribe();
+
+      const req = httpMock.expectOne(
+        (r) => r.method === 'POST' && r.url.includes('/front/categories/5'),
+      );
+      expect(req.request.body).toEqual({ name: 'Updated' });
+      req.flush({});
+
+      const reloadReq = httpMock.expectOne(
+        (r) => r.method === 'GET' && r.url.endsWith('/front/categories'),
+      );
+      reloadReq.flush({ items: [mockItem(5, 'Updated')], canAdd: true });
+    });
   });
 
-  it('toggles sort and reloads with sortDesc', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(1), canEdit: true }) as any);
-    store.reload();
+  describe('remove', () => {
+    it('should remove item from list and call delete API', () => {
+      store['items'].set([mockItem(1, 'A'), mockItem(2, 'B')]);
 
-    store.toggleSort();
+      store.remove(1).subscribe();
 
-    expect(store.sortDesc()).toBeTrue();
-    expect(api.getAll.calls.mostRecent().args[0]?.sortDesc).toBeTrue();
+      expect(store.items().length).toBe(1);
+      expect(store.items()[0].id).toBe(2);
+
+      const req = httpMock.expectOne(
+        (r) => r.method === 'DELETE' && r.url.includes('/front/categories/1'),
+      );
+      req.flush({});
+    });
+
+    it('should handle remove error', () => {
+      store['items'].set([mockItem(1, 'A')]);
+
+      store.remove(1).subscribe();
+
+      const req = httpMock.expectOne(
+        (r) => r.method === 'DELETE' && r.url.includes('/front/categories/1'),
+      );
+      req.flush({ detail: 'Delete failed' }, { status: 403, statusText: 'Forbidden' });
+
+      expect(store.error()).toBe('Delete failed');
+    });
   });
 
-  it('removeFromList removes the item immutably', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(3), canEdit: true }) as any);
-    store.reload();
-    const before = store.items();
+  describe('upsert', () => {
+    it('should add new item to beginning', () => {
+      store['items'].set([mockItem(1, 'A')]);
 
-    store.removeFromList(2);
+      store.upsert(mockItem(2, 'B'));
 
-    expect(store.items().map((i) => i.id)).toEqual([1, 3]);
-    expect(store.items()).not.toBe(before);
+      expect(store.items().length).toBe(2);
+      expect(store.items()[0].id).toBe(2);
+    });
+
+    it('should update existing item', () => {
+      store['items'].set([mockItem(1, 'A'), mockItem(2, 'B')]);
+
+      store.upsert({ id: 1, name: 'Updated A', canEdit: true, canDelete: true });
+
+      expect(store.items().length).toBe(2);
+      expect(store.items()[0].name).toBe('Updated A');
+    });
   });
 
-  it('upsert adds a new item and updates an existing one', () => {
-    api.getAll.and.returnValue(of({ items: makeItems(2), canEdit: true }) as any);
-    store.reload();
+  describe('removeFromList', () => {
+    it('should remove item by id', () => {
+      store['items'].set([mockItem(1, 'A'), mockItem(2, 'B'), mockItem(3, 'C')]);
 
-    store.upsert({ id: 99, name: 'new' });
-    expect(store.items().some((i) => i.id === 99)).toBeTrue();
+      store.removeFromList(2);
 
-    store.upsert({ id: 1, name: 'renamed' });
-    expect(store.items().find((i) => i.id === 1)?.name).toBe('renamed');
+      expect(store.items().map((i) => i.id)).toEqual([1, 3]);
+    });
+
+    it('should do nothing if id not found', () => {
+      store['items'].set([mockItem(1, 'A')]);
+
+      store.removeFromList(999);
+
+      expect(store.items().length).toBe(1);
+    });
   });
 });

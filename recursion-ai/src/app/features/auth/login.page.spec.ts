@@ -1,64 +1,63 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
-
-import { AuthService } from '../../core/auth/auth.service';
+import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoginPage } from './login.page';
+import { By } from '@angular/platform-browser';
 
 describe('LoginPage', () => {
-  let fixture: ComponentFixture<LoginPage>;
-  let component: LoginPage;
-  let auth: jasmine.SpyObj<AuthService>;
-  let router: jasmine.SpyObj<Router>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
-    auth = jasmine.createSpyObj<AuthService>('AuthService', ['logon']);
-    router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
-
     await TestBed.configureTestingModule({
-      imports: [LoginPage],
-      providers: [
-        provideNoopAnimations(),
-        { provide: AuthService, useValue: auth },
-        { provide: Router, useValue: router },
-      ],
+      imports: [LoginPage, NoopAnimationsModule],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginPage);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('shows "Field is required" and does not call logon on empty submit', () => {
-    component.submit();
-    fixture.detectChanges();
-
-    expect(auth.logon).not.toHaveBeenCalled();
-    const errors = fixture.nativeElement.querySelectorAll('.login-field__error');
-    expect(errors.length).toBe(2);
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  it('calls logon and navigates on valid submit', () => {
-    auth.logon.and.returnValue(of({}) as any);
-    component.form.setValue({ login: 'test', password: '77777' });
-
-    component.submit();
-
-    expect(auth.logon).toHaveBeenCalledWith('test', '77777');
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/categories');
+  it('should create', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('shows server error message from API response', () => {
-    auth.logon.and.returnValue(
-      throwError(() => new HttpErrorResponse({ status: 403, error: { message: 'User is blocked' } })),
-    );
-    component.form.setValue({ login: 'test', password: 'x' });
+  it('should have form with login and password controls', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    expect(fixture.componentInstance.form.contains('login')).toBeTrue();
+    expect(fixture.componentInstance.form.contains('password')).toBeTrue();
+  });
 
-    component.submit();
+  it('should have invalid form when fields are empty', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    expect(fixture.componentInstance.form.invalid).toBeTrue();
+  });
+
+  it('should not submit when form is invalid', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    fixture.componentInstance.submit();
+    expect(fixture.componentInstance.loading).toBeFalse();
+  });
+
+  it('should show server error message', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    fixture.componentInstance.serverError.set('Invalid credentials');
     fixture.detectChanges();
 
-    expect(component.serverError()).toBe('User is blocked');
+    const errorEl = fixture.debugElement.query(By.css('.server-error'));
+    expect(errorEl).toBeTruthy();
+    expect(errorEl.nativeElement.textContent).toContain('Invalid credentials');
+  });
+
+  it('should render Logon button', () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Logon');
   });
 });

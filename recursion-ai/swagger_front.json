@@ -56,7 +56,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Zidium.WebService.Front.Dictionaries.Categories.Dto.CategoryListDto"
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.CategoryListDto"
                 }
               }
             }
@@ -225,6 +225,524 @@
       "get": {
         "tags": [
           "Categories"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/channels": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ChannelListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/channels/{id}": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ChannelDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditChannelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/channels/name-exists": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/component-event-types": {
+      "get": {
+        "tags": [
+          "Component Event Types"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentEventTypeListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Component Event Types"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.AddComponentEventTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.AddComponentEventTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.AddComponentEventTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/component-event-types/{id}": {
+      "get": {
+        "tags": [
+          "Component Event Types"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentEventTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Component Event Types"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.UpdateComponentEventTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.UpdateComponentEventTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.UpdateComponentEventTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Component Event Types"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/component-event-types/name-exists": {
+      "get": {
+        "tags": [
+          "Component Event Types"
         ],
         "operationId": "NameExists",
         "parameters": [
@@ -1472,6 +1990,524 @@
         ]
       }
     },
+    "/front/component-types": {
+      "get": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentTypeListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/component-types/{id}": {
+      "get": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditComponentTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/component-types/name-exists": {
+      "get": {
+        "tags": [
+          "Component Types"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/indicator-types": {
+      "get": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.IndicatorTypeListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/indicator-types/{id}": {
+      "get": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.IndicatorTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditIndicatorTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/indicator-types/name-exists": {
+      "get": {
+        "tags": [
+          "Indicator Types"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
     "/front/logon": {
       "post": {
         "tags": [
@@ -1573,6 +2609,524 @@
             }
           }
         }
+      }
+    },
+    "/front/periodic-check-types": {
+      "get": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.PeriodicCheckTypeListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/periodic-check-types/{id}": {
+      "get": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.PeriodicCheckTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditPeriodicCheckTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/periodic-check-types/name-exists": {
+      "get": {
+        "tags": [
+          "Periodic Check Types"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.RoleListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/roles/{id}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.RoleDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/roles/name-exists": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
       }
     },
     "/front/selector/categories": {
@@ -1771,6 +3325,93 @@
         ]
       }
     },
+    "/front/selector/roles": {
+      "get": {
+        "tags": [
+          "Selectors"
+        ],
+        "summary": "Получение списка для выбора роли",
+        "operationId": "GetRoles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Zidium.WebService.Front.SelectorDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/selector/timezones": {
+      "get": {
+        "tags": [
+          "Selectors"
+        ],
+        "summary": "Получение списка для выбора часового пояса",
+        "operationId": "GetTimeZones",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Zidium.WebService.Front.TimeZoneSelectorDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/selector/users": {
+      "get": {
+        "tags": [
+          "Selectors"
+        ],
+        "summary": "Получение списка для выбора пользователя",
+        "operationId": "GetUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Zidium.WebService.Front.SelectorDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
     "/front/subscriptions/for-object": {
       "post": {
         "tags": [
@@ -1922,10 +3563,871 @@
           }
         ]
       }
+    },
+    "/front/user-groups": {
+      "get": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.UserGroupListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/user-groups/{id}": {
+      "get": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.UserGroupDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/user-groups/name-exists": {
+      "get": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/user-groups/{id}/users": {
+      "post": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "AddOrUpdateGroupUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditGroupUserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditGroupUserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditGroupUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/user-groups/{id}/users/{userId}": {
+      "delete": {
+        "tags": [
+          "User Groups"
+        ],
+        "operationId": "DeleteGroupUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetAll",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "sortDesc",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.UserListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Add",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zidium.WebService.Front.UserDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/name-exists": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "NameExists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/{id}/groups": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "AddOrUpdateGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserInGroupDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserInGroupDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserInGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/{id}/groups/{userGroupId}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "DeleteGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userGroupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/{id}/contacts": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "AddContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
+    },
+    "/front/users/{id}/contacts/{contactId}": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UpdateContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Zidium.WebService.Front.EditUserContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "DeleteContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "jwtAuth": [ ]
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "CommonPermission": {
+        "enum": [
+          "DictionariesRead",
+          "DictionariesWrite",
+          "SelfUserRead",
+          "SelfUserWrite",
+          "AllUsersRead",
+          "AllUsersWrite",
+          "UserGroupsRead",
+          "UserGroupsWrite",
+          "SelfApiTokensRead",
+          "SelfApiTokensWrite",
+          "AllApiTokensRead",
+          "AllApiTokensWrite",
+          "SubscriptionsRead",
+          "SubscriptionsWrite",
+          "RolesRead",
+          "RolesWrite"
+        ],
+        "type": "string",
+        "description": "Общие права, не зависящие от компонента"
+      },
       "CurrentUserDto": {
         "required": [
           "displayName",
@@ -1993,6 +4495,21 @@
           }
         },
         "additionalProperties": false
+      },
+      "PermissionByComponent": {
+        "enum": [
+          "ComponentsRead",
+          "ComponentsWrite",
+          "IndicatorsRead",
+          "IndicatorsWrite",
+          "IndicatorsSendValue",
+          "ComponentEventsRead",
+          "ComponentEventsSend",
+          "PeriodicChecksRead",
+          "PeriodicChecksWrite"
+        ],
+        "type": "string",
+        "description": "Права, зависящие от компонента"
       },
       "ReasonSourceType": {
         "enum": [
@@ -2110,6 +4627,29 @@
         "additionalProperties": false,
         "description": "Ответ с токенами доступа - JWT и Refresh"
       },
+      "UserGroupChannelSettingDto": {
+        "required": [
+          "channelId",
+          "minimumSendIntervalSeconds"
+        ],
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "integer",
+            "description": "Id канала",
+            "format": "int32"
+          },
+          "minimumSendIntervalSeconds": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Минимальный интервал отправки уведомлений, сек",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Настройка канала для группы пользователей"
+      },
       "Zidium.Core.Api.PropertyDto": {
         "required": [
           "name"
@@ -2141,8 +4681,35 @@
         ],
         "type": "string"
       },
+      "Zidium.WebService.Front.AddComponentEventTypeDto": {
+        "required": [
+          "joinKey",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          },
+          "joinKey": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "Zidium.WebService.Front.CategoryDto": {
         "required": [
+          "canDelete",
+          "canEdit",
           "id",
           "name"
         ],
@@ -2152,9 +4719,83 @@
             "type": "integer",
             "format": "int32"
           },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
           "name": {
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.CategoryListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.CategoryDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.ChannelDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.ChannelListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.ChannelDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -2195,6 +4836,55 @@
           },
           "defaultSubscription": {
             "$ref": "#/components/schemas/Zidium.WebService.Front.DefaultSubscriptionDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.ComponentEventTypeDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.ComponentEventTypeListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentEventTypeDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -2419,9 +5109,9 @@
       },
       "Zidium.WebService.Front.ComponentLinkDto": {
         "required": [
+          "componentDisplayName",
+          "componentFullName",
           "componentId",
-          "displayName",
-          "fullName",
           "weight"
         ],
         "type": "object",
@@ -2430,11 +5120,11 @@
             "type": "integer",
             "format": "int32"
           },
-          "displayName": {
+          "componentDisplayName": {
             "minLength": 1,
             "type": "string"
           },
-          "fullName": {
+          "componentFullName": {
             "type": "array",
             "items": {
               "type": "string"
@@ -2850,6 +5540,55 @@
         },
         "additionalProperties": false
       },
+      "Zidium.WebService.Front.ComponentTypeDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.ComponentTypeListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.ComponentTypeDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "Zidium.WebService.Front.DefaultSubscriptionDto": {
         "required": [
           "channelId",
@@ -2944,25 +5683,6 @@
         },
         "additionalProperties": false
       },
-      "Zidium.WebService.Front.Dictionaries.Categories.Dto.CategoryListDto": {
-        "required": [
-          "canEdit",
-          "items"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Zidium.WebService.Front.CategoryDto"
-            }
-          },
-          "canEdit": {
-            "type": "boolean"
-          }
-        },
-        "additionalProperties": false
-      },
       "Zidium.WebService.Front.EditCategoryDto": {
         "required": [
           "name"
@@ -2973,6 +5693,231 @@
             "maxLength": 200,
             "minLength": 1,
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditChannelDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditComponentTypeDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditGroupUserDto": {
+        "required": [
+          "roleId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditIndicatorTypeDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditPeriodicCheckTypeDto": {
+        "required": [
+          "indicatorDataType",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "indicatorDataType": {
+            "$ref": "#/components/schemas/IndicatorDataType"
+          },
+          "url": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditRoleDto": {
+        "required": [
+          "commonPermissions",
+          "name",
+          "permissionsByComponent"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "commonPermissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommonPermission"
+            }
+          },
+          "permissionsByComponent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionByComponent"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditUserContactDto": {
+        "required": [
+          "channelId",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditUserDto": {
+        "required": [
+          "displayName",
+          "name",
+          "timeZoneOffset"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "displayName": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 4000,
+            "type": "string",
+            "description": "Новый пароль, null - не менять",
+            "nullable": true
+          },
+          "timeZoneOffset": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditUserGroupDto": {
+        "required": [
+          "accessComponentId",
+          "channelSettings",
+          "name",
+          "priority"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "channelSettings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserGroupChannelSettingDto"
+            }
+          },
+          "accessComponentId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.EditUserInGroupDto": {
+        "required": [
+          "roleId",
+          "userGroupId"
+        ],
+        "type": "object",
+        "properties": {
+          "userGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2995,6 +5940,55 @@
           "statusStartedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.IndicatorTypeDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.IndicatorTypeListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.IndicatorTypeDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -3061,6 +6055,194 @@
         },
         "additionalProperties": false
       },
+      "Zidium.WebService.Front.PeriodicCheckTypeDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "indicatorDataType",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "indicatorDataType": {
+            "$ref": "#/components/schemas/IndicatorDataType"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.PeriodicCheckTypeListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.PeriodicCheckTypeDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.RoleCommonPermissionItem": {
+        "required": [
+          "enabled",
+          "hasPermission",
+          "permissionId",
+          "permissionName"
+        ],
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "$ref": "#/components/schemas/CommonPermission"
+          },
+          "permissionName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "hasPermission": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.RoleDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "commonPermissions",
+          "id",
+          "name",
+          "permissionsByComponent"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "commonPermissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.RoleCommonPermissionItem"
+            }
+          },
+          "permissionsByComponent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.RolePermissionByComponentItem"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.RoleListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.RoleListItemDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.RoleListItemDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.RolePermissionByComponentItem": {
+        "required": [
+          "enabled",
+          "hasPermission",
+          "permissionId",
+          "permissionName"
+        ],
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "$ref": "#/components/schemas/PermissionByComponent"
+          },
+          "permissionName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "hasPermission": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "Zidium.WebService.Front.SelectorDto": {
         "required": [
           "id",
@@ -3073,6 +6255,380 @@
             "format": "int32"
           },
           "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.TimeZoneSelectorDto": {
+        "required": [
+          "name",
+          "offset"
+        ],
+        "type": "object",
+        "properties": {
+          "offset": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UpdateComponentEventTypeDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 4000,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserContactItemDto": {
+        "required": [
+          "channelId",
+          "channelName",
+          "id",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "channelName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "canEditGroups",
+          "canEditName",
+          "contacts",
+          "displayName",
+          "groups",
+          "id",
+          "name",
+          "timeZoneName",
+          "timeZoneOffset"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "displayName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeZoneOffset": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeZoneName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserContactItemDto"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserInGroupItemDto"
+            }
+          },
+          "canEditName": {
+            "type": "boolean"
+          },
+          "canEditGroups": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserGroupChannelSettingItemDto": {
+        "required": [
+          "channelId",
+          "channelName",
+          "minimumSendIntervalSeconds"
+        ],
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "integer",
+            "description": "Id канала",
+            "format": "int32"
+          },
+          "minimumSendIntervalSeconds": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "description": "Минимальный интервал отправки уведомлений, сек",
+            "format": "int32"
+          },
+          "channelName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserGroupDto": {
+        "required": [
+          "accessComponentDisplayName",
+          "accessComponentFullName",
+          "accessComponentId",
+          "canDelete",
+          "canEdit",
+          "channelSettings",
+          "id",
+          "name",
+          "priority",
+          "users"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "channelSettings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserGroupChannelSettingItemDto"
+            }
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserGroupUserItemDto"
+            }
+          },
+          "accessComponentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accessComponentDisplayName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "accessComponentFullName": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserGroupListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserGroupListItemDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserGroupListItemDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "id",
+          "name",
+          "priority"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserGroupUserItemDto": {
+        "required": [
+          "roleId",
+          "roleName",
+          "userId",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserInGroupItemDto": {
+        "required": [
+          "roleId",
+          "roleName",
+          "userGroupId",
+          "userGroupName"
+        ],
+        "type": "object",
+        "properties": {
+          "userGroupId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userGroupName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "roleName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserListDto": {
+        "required": [
+          "canAdd",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Zidium.WebService.Front.UserListItemDto"
+            }
+          },
+          "canAdd": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Zidium.WebService.Front.UserListItemDto": {
+        "required": [
+          "canDelete",
+          "canEdit",
+          "displayName",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "canEdit": {
+            "type": "boolean"
+          },
+          "canDelete": {
+            "type": "boolean"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "displayName": {
             "minLength": 1,
             "type": "string"
           }

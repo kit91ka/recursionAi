@@ -1,0 +1,22 @@
+.field {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #263238;
+  }
+}
+
+.id-display {
+  padding: 0.5rem 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

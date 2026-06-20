@@ -1,0 +1,1369 @@
+﻿{
+    "document":  {
+                     "id":  "0:0",
+                     "name":  "Document",
+                     "type":  "DOCUMENT",
+                     "scrollBehavior":  "SCROLLS",
+                     "children":  [
+                                      "@{id=0:1; name=Main; type=CANVAS; scrollBehavior=SCROLLS; children=System.Object[]; backgroundColor=; prototypeStartNodeID=; flowStartingPoints=System.Object[]; prototypeDevice=}",
+                                      "@{id=465:9983; name=Temp; type=CANVAS; scrollBehavior=SCROLLS; children=System.Object[]; backgroundColor=; prototypeStartNodeID=; flowStartingPoints=System.Object[]; prototypeDevice=}",
+                                      "@{id=1508:21270; name=Task for AI; type=CANVAS; scrollBehavior=SCROLLS; children=System.Object[]; backgroundColor=; prototypeStartNodeID=; flowStartingPoints=System.Object[]; prototypeDevice=}"
+                                  ]
+                 },
+    "components":  {
+                       "63:8":  {
+                                    "key":  "3c99a910e35a143e74002bb8757e7cdddd190d10",
+                                    "name":  "Property 1=root",
+                                    "description":  "",
+                                    "remote":  false,
+                                    "componentSetId":  "65:9",
+                                    "documentationLinks":  ""
+                                },
+                       "66:207":  {
+                                      "key":  "2c8a0daf16012e298c1aaf6b0a5c26fc02339099",
+                                      "name":  "Property 1=middle",
+                                      "description":  "",
+                                      "remote":  false,
+                                      "componentSetId":  "65:9",
+                                      "documentationLinks":  ""
+                                  },
+                       "66:320":  {
+                                      "key":  "e2606885b88909f83cfb944a2e8e8c2dc325c68b",
+                                      "name":  "Property 1=root",
+                                      "description":  "",
+                                      "remote":  false,
+                                      "componentSetId":  "66:319",
+                                      "documentationLinks":  ""
+                                  },
+                       "66:305":  {
+                                      "key":  "27c31e8f2b2ebc794f262ce3a548a8efd7da6b3f",
+                                      "name":  "Property 1=root",
+                                      "description":  "",
+                                      "remote":  false,
+                                      "componentSetId":  "66:289",
+                                      "documentationLinks":  ""
+                                  },
+                       "66:252":  {
+                                      "key":  "5c5074843f44a9788942244bdf35d6e9b4d34df2",
+                                      "name":  "Property 1=middle 2",
+                                      "description":  "",
+                                      "remote":  false,
+                                      "componentSetId":  "65:9",
+                                      "documentationLinks":  ""
+                                  },
+                       "158:335":  {
+                                       "key":  "263cc6449b6eb3f7e75ef4d20f126c1e4b9237fe",
+                                       "name":  "Статус=Желтый",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "158:327",
+                                       "documentationLinks":  ""
+                                   },
+                       "156:224":  {
+                                       "key":  "721a0e1a5f060056aa9ae2a4836c6f827d3f371a",
+                                       "name":  "Статус=Зеленый",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "158:327",
+                                       "documentationLinks":  ""
+                                   },
+                       "158:342":  {
+                                       "key":  "4125113c835bd81dd4a6f4182d82e4a6d56671c3",
+                                       "name":  "Статус=Красный",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "158:327",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:96":  {
+                                      "key":  "14731c9f2eb62ba35fdd819874a663815778c9d9",
+                                      "name":  "Статус=Зеленый, State=Open",
+                                      "description":  "",
+                                      "remote":  false,
+                                      "componentSetId":  "163:95",
+                                      "documentationLinks":  ""
+                                  },
+                       "163:120":  {
+                                       "key":  "1e5937a4c5583751e1bf6094e1652f827b7a7b72",
+                                       "name":  "General / expand_less",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "documentationLinks":  ""
+                                   },
+                       "163:123":  {
+                                       "key":  "a259647dcf24971d2407108e801cee30ca139426",
+                                       "name":  "General / more_vert",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "documentationLinks":  ""
+                                   },
+                       "163:491":  {
+                                       "key":  "e664cad533030153dddf262a6a893c23e27790d4",
+                                       "name":  "Статус=Зеленый, State=Closed",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "163:95",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:103":  {
+                                       "key":  "ed74a1dd49584fb320a6f787385fdba07614a82f",
+                                       "name":  "Статус=Желтый, State=Open",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "163:95",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:502":  {
+                                       "key":  "087d771609aa2b5a1707b27f875a0c2f429b392d",
+                                       "name":  "Статус=Желтый, State=Closed",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "163:95",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:110":  {
+                                       "key":  "15da2e405aa73f66106ede46dfbcbef7268fa432",
+                                       "name":  "Статус=Красный, State=Open",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "163:95",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:513":  {
+                                       "key":  "9e3dd40fdcaeaa43f00aebfafe0b8fd49c44ac2f",
+                                       "name":  "Статус=Красный, State=Closed",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "163:95",
+                                       "documentationLinks":  ""
+                                   },
+                       "163:2967":  {
+                                        "key":  "5882af2745134c43ca48d8464e32036c9d28c87c",
+                                        "name":  "Property 1=Seelcted, State=Default",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "163:2966",
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3044":  {
+                                        "key":  "dac99009a5d32f76b900e81b2f646f0784440192",
+                                        "name":  "General / a",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2969":  {
+                                        "key":  "9c82105d2b7b840b45d56233b724632ee2bdbaaf",
+                                        "name":  "Property 1=NotSelected, State=Default",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "163:2966",
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3043":  {
+                                        "key":  "5ade70503868bd7c9f2b5d5a285aa6d54ac95e18",
+                                        "name":  "General / b",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3042":  {
+                                        "key":  "7777aa7683151df5a62c31c825b0087fb93cc7ee",
+                                        "name":  "General / c",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3041":  {
+                                        "key":  "20b30970390cdb36b26459d67fb0ca8e3f6dbff4",
+                                        "name":  "General / d",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2571":  {
+                                        "key":  "fd656047dbf612ae2d3460a19eaf344b0c33ad93",
+                                        "name":  "General / list",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2581":  {
+                                        "key":  "549ece6727d88f8e8378a3cec158a73740151761",
+                                        "name":  "General / close",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3070":  {
+                                        "key":  "77782d3823ecaca5c5fa2683450fa7ec3f070db2",
+                                        "name":  "General / bar_chart",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "228:4694":  {
+                                        "key":  "7c9d10590f67647c10fe09332dcbf30e4e38c250",
+                                        "name":  "General / expand_less",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "377:7633":  {
+                                        "key":  "b6f0ac90ebd92618538964c4e8307676e978fab1",
+                                        "name":  "Property 1=Open",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "377:7635",
+                                        "documentationLinks":  ""
+                                    },
+                       "381:8006":  {
+                                        "key":  "52f8c0e14fc734110a1c9e04f0f092b5d90fbd41",
+                                        "name":  "menu_close",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "362:13072":  {
+                                         "key":  "a24f629e832e5814e50993a3d3014ae80fcc8d7f",
+                                         "name":  "Tree",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "292:5687":  {
+                                        "key":  "b3d4646591680244852477e6f95f185bbdf98400",
+                                        "name":  "Component / Settings",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "373:7468":  {
+                                        "key":  "ea7317ddc33bf8e6a9ad8d2cc5fb7364e61ce01d",
+                                        "name":  "account_circle",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "374:7504":  {
+                                        "key":  "852e7c74cb255899b59e784e32464668ddc24e41",
+                                        "name":  "logout",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "658:24028":  {
+                                         "key":  "fabd6b3199daa09ae45bad97cccb85c04371fbbf",
+                                         "name":  "Components",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "658:22491":  {
+                                         "key":  "1ef645cf81529e656029c1d8232e05f749bec2ad",
+                                         "name":  "filter",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "273:1785":  {
+                                        "key":  "592ba9052727dceca067acf022c4440acbbfe831",
+                                        "name":  "play_arrow",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "762:25359":  {
+                                         "key":  "7de9eaed0825e3c04d6faaf58ec116e2eafec4f9",
+                                         "name":  "Property 1=Playing",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "componentSetId":  "762:25361",
+                                         "documentationLinks":  ""
+                                     },
+                       "249:1915":  {
+                                        "key":  "ae1d9564a4697361d54b565a9b17ef00b3c38cad",
+                                        "name":  "Дерево компонентов",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "1291:19984":  {
+                                          "key":  "80889ed79043c708821f9e55043222eb92dd8c5a",
+                                          "name":  "Property 1=1 lvl, Selected=No",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "247:997":  {
+                                       "key":  "5179a3f8f1b0b9d54b3dae5948a05d52aefb3298",
+                                       "name":  "Property 1=Open",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "247:996",
+                                       "documentationLinks":  ""
+                                   },
+                       "1291:20008":  {
+                                          "key":  "4ee2e52568c935d84056c6da1e5b6749c6d93cce",
+                                          "name":  "Property 1=2 lvl, Selected=No",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "1291:20080":  {
+                                          "key":  "39fdee51d135ad844de85f907efdab67cec0aad8",
+                                          "name":  "Property 1=3 lvl, Selected=No",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "247:995":  {
+                                       "key":  "442f13f6ec9ad8b1730495723372a452a4526991",
+                                       "name":  "Property 1=Closed",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "247:996",
+                                       "documentationLinks":  ""
+                                   },
+                       "1291:20095":  {
+                                          "key":  "83d42371bce2624aaaa9faa099f59eeffe705259",
+                                          "name":  "Property 1=3 lvl, Selected=Yes",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "712:18263":  {
+                                         "key":  "abf9c603a34c09a13623811590af63ceb84ed0f9",
+                                         "name":  "speed",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "358:9736":  {
+                                        "key":  "96eb4a7bb3c68d0f2d51541416167c6a856114ef",
+                                        "name":  "info",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "712:44235":  {
+                                         "key":  "6e0a8d276b9de56cca9abe538713509d0ea9c7ea",
+                                         "name":  "dashboard",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "1291:20024":  {
+                                          "key":  "cf9d423d45eaed8b9278d72f2ef7fa6dc89aafae",
+                                          "name":  "Property 1=2 lvl LINK, Selected=No",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "247:987":  {
+                                       "key":  "7e77940c2088b9f2cd69d81ce91f5b7cb39e4fd5",
+                                       "name":  "Property 1=3 lvl, Selected=No",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "247:990",
+                                       "documentationLinks":  ""
+                                   },
+                       "383:9116":  {
+                                        "key":  "c42c60b4362db1fe0260c74594eeb2ce45788a5e",
+                                        "name":  "Focus=False",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "383:9115",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:5686":  {
+                                        "key":  "5e6355cc6afcc28b289f51351b367d6775d519b3",
+                                        "name":  "Component / Menu",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "292:5115":  {
+                                        "key":  "c19b3a065d93ed584267c803db1d8b7910c9b971",
+                                        "name":  "Component / Health  ",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "315:3282":  {
+                                        "key":  "8d2ce42ccac2791cb00198db4353b17c239e82cd",
+                                        "name":  "add_alert",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "358:7776":  {
+                                        "key":  "0af7a72105a746594ab5b72af854dd7dac0b17e3",
+                                        "name":  "link_2",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "358:11545":  {
+                                         "key":  "3c03926eca18dda77f3c731bdd71eb0d0e666de2",
+                                         "name":  "Ярлык",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "273:2047":  {
+                                        "key":  "f4d64568c91345e025f27ad6d0dfaa8850edeac6",
+                                        "name":  "Property 1=One point selected",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "273:2046",
+                                        "documentationLinks":  ""
+                                    },
+                       "381:8821":  {
+                                        "key":  "412e10edc2550fc79cf12e98a01cb129f0cc8252",
+                                        "name":  "Property 1=История здоровья, Здоровье=Скролл",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3184":  {
+                                        "key":  "68c3d6c3b593c20e7204939f8dab3b183ed1e65a",
+                                        "name":  "State=Idle",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:3183",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3170":  {
+                                        "key":  "f840a9c4571e52b09291c2270075cd61c19ee385",
+                                        "name":  "16 / Search",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3192":  {
+                                        "key":  "28e15931da9f576879529c6154a33172997cfdc8",
+                                        "name":  "State=Highlight",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:3183",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3935":  {
+                                        "key":  "1b1530a005917276be583925e1a0ee4ca9f74b48",
+                                        "name":  "Type=Default",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:3934",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3585":  {
+                                        "key":  "38edef61b43ace832a7d5799aad7e8e1b1d224b7",
+                                        "name":  "20 / Chevron right",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "278:4521":  {
+                                        "key":  "f75a5f4d936165c5fac3ef7df1229fde85df51db",
+                                        "name":  "Size=Large, Grid Lines=False, State=Default, Position=Center, Height=1 line",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:4516",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:4483":  {
+                                        "key":  "322c6e00c6ed1a19c920c8e29dd0557f0e8aa69d",
+                                        "name":  "Type=Text",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:4482",
+                                        "documentationLinks":  ""
+                                    },
+                       "1291:23817":  {
+                                          "key":  "7e9cd3929c36e06418892e23e519df263827bc81",
+                                          "name":  "Дерево компонентов 2",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "documentationLinks":  ""
+                                      },
+                       "353:5226":  {
+                                        "key":  "19cfcc372cd21737027e92cc305a8ec9a3115265",
+                                        "name":  "Property 1=Default",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5225",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4113":  {
+                                        "key":  "c0c721523e4ae297f302dcde6382be41efe81020",
+                                        "name":  "Property 1=Причины ущерба, Здоровье=Конкретный момент времени",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:8869":  {
+                                        "key":  "2eb3b7faa7b060c6ba27a3739b3bed570f70a703",
+                                        "name":  "⚙️ State=Default, 🟦 Filled=True, 🤏 Size=M-40",
+                                        "description":  "InputText renders a text field to enter data.",
+                                        "remote":  true,
+                                        "componentSetId":  "292:8844",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:8816":  {
+                                        "key":  "f840a9c4571e52b09291c2270075cd61c19ee385",
+                                        "name":  "16 / Search",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "292:8820":  {
+                                        "key":  "845fb7c2643252e7a80a3bc39b4ebc6ac10ec0a0",
+                                        "name":  "Text Config=Placeholder",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "292:8819",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:9037":  {
+                                        "key":  "8a3b3b73834d5707c79514363f12e840b608551f",
+                                        "name":  "⚙️ State=Error, 🟦 Filled=True, 🤏 Size=M-40",
+                                        "description":  "InputText renders a text field to enter data.",
+                                        "remote":  true,
+                                        "componentSetId":  "292:8844",
+                                        "documentationLinks":  ""
+                                    },
+                       "377:7634":  {
+                                        "key":  "52e2c9cdf5dff200b957e842dddc5baa0fe865a3",
+                                        "name":  "Property 1=Closed",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "377:7635",
+                                        "documentationLinks":  ""
+                                    },
+                       "381:8005":  {
+                                        "key":  "d65dfb4f5f0b56b80b35ec3ea0129b3525063b29",
+                                        "name":  "menu_Open",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3968":  {
+                                        "key":  "8508ec1c40f9faafd95664b6de5d7e988dc9d522",
+                                        "name":  "Type=Empty",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:3934",
+                                        "documentationLinks":  ""
+                                    },
+                       "305:3134":  {
+                                        "key":  "224af0ee964245f919fa496a424592b552dc2b4d",
+                                        "name":  "Add",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "278:4485":  {
+                                        "key":  "8dcbde7e4b24cef49e5d1de86d113c118b1ca168",
+                                        "name":  "Type=Digits",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:4482",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:4491":  {
+                                        "key":  "538b73e09a49b57918c5a80536e315dbc2b5bb66",
+                                        "name":  "Type=Icon",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "278:4482",
+                                        "documentationLinks":  ""
+                                    },
+                       "305:3075":  {
+                                        "key":  "bf2d80ac021356a6474325d8321ff34fb6f78ee9",
+                                        "name":  "Delete",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "302:3672":  {
+                                        "key":  "6a54d5f420266cdfe7bac62893fb39abd922d037",
+                                        "name":  "Edit",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "362:7900":  {
+                                        "key":  "70cf847f812c34ce8e5c55d66f0cd1c3863de844",
+                                        "name":  "OVerlay",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "362:6221":  {
+                                        "key":  "f57888eeafa0e8255acb415c1045259db9e97498",
+                                        "name":  "search",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "247:989":  {
+                                       "key":  "6c41093e14ff0273ab01fcccf275d2f2a45744c6",
+                                       "name":  "Property 1=1 lvl, Selected=No",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "247:990",
+                                       "documentationLinks":  ""
+                                   },
+                       "247:988":  {
+                                       "key":  "64df11bda91e5c264dc4fc78bd5c5bdec025ce9f",
+                                       "name":  "Property 1=2 lvl, Selected=No",
+                                       "description":  "",
+                                       "remote":  false,
+                                       "componentSetId":  "247:990",
+                                       "documentationLinks":  ""
+                                   },
+                       "476:16480":  {
+                                         "key":  "b421f6489fd230e2174bf85e4a8462772e0b49bb",
+                                         "name":  "Справочник",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "documentationLinks":  ""
+                                     },
+                       "292:8822":  {
+                                        "key":  "e58fe831413a6408a7bfd1b1ad4b59e58e52a519",
+                                        "name":  "Text Config=Text",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "292:8819",
+                                        "documentationLinks":  ""
+                                    },
+                       "322:6033":  {
+                                        "key":  "59f7e7dbc70f6c05cb2c9b398d038da7d35a83b5",
+                                        "name":  "Question",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "315:3319":  {
+                                        "key":  "15bd8cf1a67b25a2e34148a3beff8b1ab62b3d8f",
+                                        "name":  "General / Chevron_left",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "302:6376":  {
+                                        "key":  "d783b268f974bc66bf8ac315e3fa9ecb26b4fc78",
+                                        "name":  "State=Idle, Float Label=False",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "302:6375",
+                                        "documentationLinks":  ""
+                                    },
+                       "302:3893":  {
+                                        "key":  "9e17ae6ff3272a1a72c8b1ce5b5efe8ed9b59266",
+                                        "name":  "⚙️ State=Default, ❌ Invalid=False, 🚫 Disabled=False, 🟦 Filled=False, 🤏 Size=Large, ▭ Ifta Label=False, 🏷️ Float Label=False, ↳ Float Label Variant=N/A",
+                                        "description":  "InputText renders a text field to enter data.",
+                                        "remote":  true,
+                                        "componentSetId":  "302:3892",
+                                        "documentationLinks":  ""
+                                    },
+                       "302:3826":  {
+                                        "key":  "f75e233692512c495837c96a585eaae2e641418f",
+                                        "name":  "16/user",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "302:3848":  {
+                                        "key":  "4a92e0ea6d76daaa0ad1b713c8227cf93aad5b05",
+                                        "name":  "Text Config=Text",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "302:3842",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:4377":  {
+                                        "key":  "814f720d5911ca474db7e917fdc450265adc4f35",
+                                        "name":  "16/x-close",
+                                        "description":  "x, close, exit, remove, cross, delete",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "302:3865":  {
+                                        "key":  "3c89fe96007bc9dcf993d1b1a2944044939c0743",
+                                        "name":  "16/chevron-down",
+                                        "description":  "chevron-down, down, fall, decrease, lower",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "362:6187":  {
+                                        "key":  "14330815a377b53015502e324dc8215bce6d10fd",
+                                        "name":  "General / more_hor",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3173":  {
+                                        "key":  "820fede46757995b357baddaed4dd70f2e9f801c",
+                                        "name":  "Property 1=Выбрано",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "163:3172",
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3176":  {
+                                        "key":  "d49bbfd1cae60bf6849049c9591d6c9e019661e9",
+                                        "name":  "Property 1=Не выбрано",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "163:3172",
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2642":  {
+                                        "key":  "945e4c7f908b25b3b5b6c17face8e7da9ab75ded",
+                                        "name":  "Property 1=Seelcted",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "163:2643",
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2641":  {
+                                        "key":  "279ff780fe9db59eab29aa6423d06df6382c26c4",
+                                        "name":  "Property 1=NotSelected",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "163:2643",
+                                        "documentationLinks":  ""
+                                    },
+                       "315:3306":  {
+                                        "key":  "4ca81649d4a4cf8310bde257d9e40a69835bb052",
+                                        "name":  "General / expand",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "315:3320":  {
+                                        "key":  "db75f517fac3cf191bae5ad8bd6a8cfe598ce640",
+                                        "name":  "General / Chevron_right",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:2624":  {
+                                        "key":  "b0563910978b7dc94869e02ca71bd965535565d3",
+                                        "name":  "General / Заглушка",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "273:2822":  {
+                                        "key":  "18547df7488fa673ad2d29538348bfd263f46923",
+                                        "name":  "pause",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "362:6222":  {
+                                        "key":  "f7cfb7f50fd68a8ebe298e4949264c6d5b63f580",
+                                        "name":  "function",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "374:7547":  {
+                                        "key":  "89accde2c90c08f297ad176aee4850bae057bf31",
+                                        "name":  "Menu",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "381:7946":  {
+                                        "key":  "720dc87f38d7ed12d89bd53cc92789c37a981657",
+                                        "name":  "arrowopen",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "381:7953":  {
+                                        "key":  "6d6ab7d80697f24ed1c3f9b823f4fb0d7925ade1",
+                                        "name":  "arrowclose",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "documentationLinks":  ""
+                                    },
+                       "163:3009":  {
+                                        "key":  "2d20fc9d1f7f987a4b623bfa0e9869062323d66a",
+                                        "name":  "Property 1=NotSelected, State=Hover",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "163:2966",
+                                        "documentationLinks":  ""
+                                    },
+                       "247:1246":  {
+                                        "key":  "47631760cd6c57f1515074646397ba56b0df06ad",
+                                        "name":  "Property 1=1 lvl, Selected=Yes",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "247:990",
+                                        "documentationLinks":  ""
+                                    },
+                       "358:6362":  {
+                                        "key":  "0403079d11e28bd22e8b56521c9185386340db41",
+                                        "name":  "Property 1=2 lvl LINK, Selected=No",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "247:990",
+                                        "documentationLinks":  ""
+                                    },
+                       "247:1257":  {
+                                        "key":  "17f95ee7bebd23ce59218659f308c4ce4fbbcfe4",
+                                        "name":  "Property 1=2 lvl, Selected=Yes",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "247:990",
+                                        "documentationLinks":  ""
+                                    },
+                       "358:6377":  {
+                                        "key":  "aa8787301c90f817ff742ec3c60864fa97d0802a",
+                                        "name":  "Property 1=2 lvl LINK, Selected=Yes",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "247:990",
+                                        "documentationLinks":  ""
+                                    },
+                       "247:1272":  {
+                                        "key":  "88130a0b3a170710bf23f91bde14021d633431bc",
+                                        "name":  "Property 1=3 lvl, Selected=Yes",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "247:990",
+                                        "documentationLinks":  ""
+                                    },
+                       "1291:19996":  {
+                                          "key":  "ad7e634e36033c7c6ee0d26fdeaab1378db5d193",
+                                          "name":  "Property 1=1 lvl, Selected=Yes",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "1291:20044":  {
+                                          "key":  "96f932690e778da1787e68782f7e4b8b3688e7c9",
+                                          "name":  "Property 1=2 lvl, Selected=Yes",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "1291:20060":  {
+                                          "key":  "3651d55b4e32fb4db031996af0e2cc2ab8e489ea",
+                                          "name":  "Property 1=2 lvl LINK, Selected=Yes",
+                                          "description":  "",
+                                          "remote":  false,
+                                          "componentSetId":  "1291:19983",
+                                          "documentationLinks":  ""
+                                      },
+                       "273:2045":  {
+                                        "key":  "32db3f11288d715ff2dd52eebbad4f38a11c6c1d",
+                                        "name":  "Property 1=Default",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "273:2046",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3302":  {
+                                        "key":  "0adf40dfa702eccf552986d87426b3396f90ade6",
+                                        "name":  "Property 1=Причины ущерба, Здоровье=Сейчас",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "273:2303":  {
+                                        "key":  "8c531729ada2fa42ad52eb6af5b75ce9065bb6c9",
+                                        "name":  "Property 1=Status selcted",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "273:2046",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4749":  {
+                                        "key":  "926321ff9afaed2df4a139e810d50126b3f9f157",
+                                        "name":  "Property 1=Причины ущерба, Здоровье=Интервал",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:2236":  {
+                                        "key":  "88f215e26d13f513ba6920a81da6c3f952a04b53",
+                                        "name":  "Property 1=Default",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "292:2235",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:2487":  {
+                                        "key":  "30c1f72d33a6a4b04977b3d43a013bbcc5fffe05",
+                                        "name":  "Property 1=One point selected",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "292:2235",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:2741":  {
+                                        "key":  "871fdf8b44703b4da59a8aaea474ea517e702d51",
+                                        "name":  "Property 1=Status selcted",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "292:2235",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:2999":  {
+                                        "key":  "1e152d54230ef04af035ddc3aed5231027d6eeac",
+                                        "name":  "Property 1=Custom moment selected DEPRICATED",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "292:2235",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3304":  {
+                                        "key":  "f4fb31db249ebf2620821aff9076f941abdeba73",
+                                        "name":  "Property 1=История здоровья, Здоровье=Сейчас",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4191":  {
+                                        "key":  "1a3d4b6be8d23a156440eeb6a72aab1520c3560c",
+                                        "name":  "Property 1=История здоровья, Здоровье=Конкретный момент времени",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4827":  {
+                                        "key":  "124812bc820549b3a72c8963e46f755093491d4a",
+                                        "name":  "Property 1=История здоровья, Здоровье=Интервал",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "278:3391":  {
+                                        "key":  "375ae0afffa0dbc8a062498e1282234eb83e2c9c",
+                                        "name":  "Property 1=История статусов, Здоровье=Сейчас",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4216":  {
+                                        "key":  "1bced2df771938044ee1098ec3cd25d29cec3b67",
+                                        "name":  "Property 1=История статусов, Здоровье=Конкретный момент времени",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "292:4852":  {
+                                        "key":  "b0521c3d3ad19618f5c7993554f556c1eebb76a9",
+                                        "name":  "Property 1=История статусов, Здоровье=Интервал",
+                                        "description":  "",
+                                        "remote":  false,
+                                        "componentSetId":  "278:3303",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:5228":  {
+                                        "key":  "0e426379cbe4a1a96581cf1d85a75240d013f632",
+                                        "name":  "Property 1=hover",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5225",
+                                        "documentationLinks":  ""
+                                    },
+                       "762:25360":  {
+                                         "key":  "3178f699c4ba9c4754cc83045d8076897c397fbc",
+                                         "name":  "Property 1=Paused",
+                                         "description":  "",
+                                         "remote":  false,
+                                         "componentSetId":  "762:25361",
+                                         "documentationLinks":  ""
+                                     },
+                       "353:5245":  {
+                                        "key":  "cdfe49b1b9e00aff7e81ff1033fc62c8182d45e3",
+                                        "name":  "Status=Default",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5244",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:5266":  {
+                                        "key":  "ee03399e548b4fcff875c44bc19cc1ca70c62b67",
+                                        "name":  "State=Idle, Month / Year=Month",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5265",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:5270":  {
+                                        "key":  "543bce39ce5fbf7efa41ebb58afeec8c8fa455fb",
+                                        "name":  "State=Idle, Month / Year=Year",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5265",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:5889":  {
+                                        "key":  "f16ed8ba5a31b3744cd580c30f98279ced9beb2f",
+                                        "name":  "Severity=Secondary, State=Idle, Disabled=False, Icon Only=True, ⬆️ Raised=False, ⥰ Rounded=True, 🔤 Text=True, 🔲 Outlined=False, Link=False",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:5468",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:5274":  {
+                                        "key":  "d5b2abd350d3d9a1fdd82cc95520b280c694a178",
+                                        "name":  "chevron-left",
+                                        "description":  "chevron-left, backward, previous, return, left",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "353:7401":  {
+                                        "key":  "d506d190259461c52bde03d51736a0f34d59e56d",
+                                        "name":  "chevron-right",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "documentationLinks":  ""
+                                    },
+                       "353:7425":  {
+                                        "key":  "5667d711ee0ae5d1ba7f998e6bab44321108fec5",
+                                        "name":  "State=Disabled, Type=Day",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:7421",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:7422":  {
+                                        "key":  "4de343097f0e205fd88d086dee783a6fdc3771f6",
+                                        "name":  "State=Default, Type=Day",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:7421",
+                                        "documentationLinks":  ""
+                                    },
+                       "353:7434":  {
+                                        "key":  "94751fa57b73e268dbcb681d9d48a3021cea760a",
+                                        "name":  "State=Today, Type=Day",
+                                        "description":  "",
+                                        "remote":  true,
+                                        "componentSetId":  "353:7421",
+                                        "documentationLinks":  ""
+                                    }
+                   },
+    "componentSets":  {
+                          "65:9":  {
+                                       "key":  "74d6b53c150e076c285fe4d9448b57516ebeb32d",
+                                       "name":  "helth Component",
+                                       "description":  "",
+                                       "documentationLinks":  ""
+                                   },
+                          "66:319":  {
+                                         "key":  "1d7c070f33df9fe70a9c8cc6dd513e55bc4285d8",
+                                         "name":  "Checks",
+                                         "description":  "",
+                                         "documentationLinks":  ""
+                                     },
+                          "66:289":  {
+                                         "key":  "1300011baecec63944b76e72b7f765891760acf3",
+                                         "name":  "Metrics",
+                                         "description":  "",
+                                         "documentationLinks":  ""
+                                     },
+                          "158:327":  {
+                                          "key":  "2e1f5eb015ba05fe7486c836f5b1b82f633fa583",
+                                          "name":  "Group 72",
+                                          "description":  "",
+                                          "documentationLinks":  ""
+                                      },
+                          "163:95":  {
+                                         "key":  "ebc48ca5239c3918a7674a069a1ed2c03cbc33b5",
+                                         "name":  "Accordeon",
+                                         "description":  "",
+                                         "documentationLinks":  ""
+                                     },
+                          "163:2966":  {
+                                           "key":  "bbc1a18bf0a21d29aff3b6046b9eabb49c7f0e4c",
+                                           "name":  "Menu Item",
+                                           "description":  "",
+                                           "documentationLinks":  ""
+                                       },
+                          "377:7635":  {
+                                           "key":  "3dc0efc85690c20de3dbe15a8b6822eb1dac5447",
+                                           "name":  "Menu",
+                                           "description":  "",
+                                           "documentationLinks":  ""
+                                       },
+                          "762:25361":  {
+                                            "key":  "bb5051f42f0720e05790fe3d1c252b76c2408811",
+                                            "name":  "time",
+                                            "description":  "",
+                                            "documentationLinks":  ""
+                                        },
+                          "1291:19983":  {
+                                             "key":  "2ba872f4ac3f834eb86ae154827eb180dae19bfe",
+                                             "name":  "Контроллер - item 2",
+                                             "description":  "",
+                                             "documentationLinks":  ""
+                                         },
+                          "247:996":  {
+                                          "key":  "ba7132d0ae0dd8ffde09e8ad3767f45f2e8290bf",
+                                          "name":  "Accrodeon button",
+                                          "description":  "",
+                                          "documentationLinks":  ""
+                                      },
+                          "247:990":  {
+                                          "key":  "08a7eb4d0e26f786129f869e490c5699fe4af825",
+                                          "name":  "Контроллер - item",
+                                          "description":  "",
+                                          "documentationLinks":  ""
+                                      },
+                          "383:9115":  {
+                                           "key":  "b2a4963e07b6fa6aa1639c2ba381d9b91b0aa075",
+                                           "name":  "_scrollpanel-bar",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "273:2046":  {
+                                           "key":  "334b2354af84db3b1353bc20f2c87be4d0a211ba",
+                                           "name":  "Здоровье",
+                                           "description":  "",
+                                           "documentationLinks":  ""
+                                       },
+                          "278:3303":  {
+                                           "key":  "68a2a5147aa6251cc271b0516215713a9aae40b1",
+                                           "name":  "Здоровье / Tabs",
+                                           "description":  "",
+                                           "documentationLinks":  ""
+                                       },
+                          "278:3183":  {
+                                           "key":  "50696c6ea415477ca94fb40753fd90ed9ea026f0",
+                                           "name":  "_tabs-tab",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "278:3934":  {
+                                           "key":  "c8eec8447536aebe3a1242386231f20671aeb37e",
+                                           "name":  "datatable-header-cell",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "278:4516":  {
+                                           "key":  "e64774af5965ed619864e866281bb33c8c9dd183",
+                                           "name":  "_datatable-body-cell",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "278:4482":  {
+                                           "key":  "44b4b33ab8b3a61e00c0af035c7dd51e613e31d7",
+                                           "name":  "_datatable-content",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "353:5225":  {
+                                           "key":  "3a35f3402e22dfc086c0654b9eb6eebd3fe32c0f",
+                                           "name":  "List item",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "292:8844":  {
+                                           "key":  "49f1688f5e775bdb944397a21630eb8e4171e2a9",
+                                           "name":  "inputtext",
+                                           "description":  "InputText is an extension to standard input element with theming.",
+                                           "remote":  true
+                                       },
+                          "292:8819":  {
+                                           "key":  "1ebba694e9923b9e3b06c7adcb51b53c85af36b1",
+                                           "name":  "_inputtext-content",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "302:6375":  {
+                                           "key":  "3cb6bcd8b796a2465127a59867a5444039c893fd",
+                                           "name":  "select",
+                                           "description":  "Dropdown is used to select an item from a list of options.",
+                                           "remote":  true
+                                       },
+                          "302:3892":  {
+                                           "key":  "d35d675439f5802b181a5e2b4bff8534d064d876",
+                                           "name":  "_select-input",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "302:3842":  {
+                                           "key":  "4dc22645102ed06e46ce34c0ecb65117775011a0",
+                                           "name":  "_select-input-content",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "163:3172":  {
+                                           "key":  "a0e93471f92a78d82b11066e45c6b4b26624533f",
+                                           "name":  "Tab",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "163:2643":  {
+                                           "key":  "35a46977dbcf72fd77296dd56cd9b960c5788cbe",
+                                           "name":  "Menu Item",
+                                           "description":  "",
+                                           "remote":  false
+                                       },
+                          "292:2235":  {
+                                           "key":  "667ed4b9ae7a0fbeb7373a739eb4eb5fc18e214f",
+                                           "name":  "Здоровье",
+                                           "description":  "",
+                                           "documentationLinks":  ""
+                                       },
+                          "353:5244":  {
+                                           "key":  "3b9fa109907bfae83fda8d71063b54ab18f7cb3b",
+                                           "name":  "Scroll / Vertical / M",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "353:5265":  {
+                                           "key":  "70bacd1f81d62280c237eb37511bfa46fa662e2e",
+                                           "name":  "_datepicker-select",
+                                           "description":  "",
+                                           "remote":  true
+                                       },
+                          "353:5468":  {
+                                           "key":  "b114a794f64bcd80c72f9c1c145bc232b78a400d",
+                                           "name":  "button",
+                                           "description":  "Button is an extension to standard button element with icons and theming.",
+                                           "remote":  true
+                                       },
+                          "353:7421":  {
+                                           "key":  "c7823aa81fb6ff88df7a3fe7a63b44f642631806",
+                                           "name":  "_datepicker-cell",
+                                           "description":  "",
+                                           "remote":  true
+                                       }
+                      },
+    "schemaVersion":  0,
+    "styles":  {
+                   "163:119":  {
+                                   "key":  "b63f986459887907137702bf91f03711071e5715",
+                                   "name":  "Color/hover",
+                                   "styleType":  "FILL",
+                                   "remote":  true,
+                                   "description":  ""
+                               },
+                   "163:2604":  {
+                                    "key":  "c573eba32de99ab249038765a325d0284c9eed11",
+                                    "name":  "M3/sys/light/outline",
+                                    "styleType":  "FILL",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3073":  {
+                                    "key":  "8ce51915e7b0ba9987b1f0914f1460ab1e276ba5",
+                                    "name":  "General/Buttons",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3552":  {
+                                    "key":  "2c8fc085cdcc07e1a87fe5be23fe82da2f9dede7",
+                                    "name":  "Color/stroke",
+                                    "styleType":  "FILL",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3551":  {
+                                    "key":  "fb4037a1888693314f03c437e4a8525bcfaab7c0",
+                                    "name":  "stroke",
+                                    "styleType":  "FILL",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "278:3172":  {
+                                    "key":  "09d083a682221be25f3de92fc9fd79a46f0eb2b1",
+                                    "name":  "Body/Regular",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "292:6207":  {
+                                    "key":  "abcecc6ed45f4025c6b4dc855b5722e2f5109f43",
+                                    "name":  "Caption/Regular",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "278:4376":  {
+                                    "key":  "d390c83201daaabcf4cccecf14b1288b054a3f28",
+                                    "name":  "Icon grid",
+                                    "styleType":  "GRID",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3171":  {
+                                    "key":  "39043fcdbab476d60a1f1bc9a9ebb221cb2c53c9",
+                                    "name":  "General/Tabs",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3597":  {
+                                    "key":  "6c944456e95e5b772c5e823dfdd497105a5ca7e9",
+                                    "name":  "Tooltip/Secondary header",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3598":  {
+                                    "key":  "81092e9151162e793bb8365cadd95a7b1188a085",
+                                    "name":  "Tooltip/Text",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3596":  {
+                                    "key":  "4676ead542da785f9abdcc6268331f0c9cdb2bce",
+                                    "name":  "New Shadows/Tooltips, Dropdowns, Toasts",
+                                    "styleType":  "EFFECT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "163:3198":  {
+                                    "key":  "e27753d9f67b5a733e09bbe93f51d6c266364e0c",
+                                    "name":  "Input/Filled/Header",
+                                    "styleType":  "TEXT",
+                                    "remote":  true,
+                                    "description":  ""
+                                },
+                   "353:5230":  {
+                                    "key":  "1415b4d97e7750f4c999d6b764eb9045586e3998",
+                                    "name":  "Tap zone",
+                                    "styleType":  "GRID",
+                                    "remote":  true,
+                                    "description":  ""
+                                }
+               },
+    "name":  "Zidium",
+    "lastModified":  "2026-06-17T11:26:31Z",
+    "thumbnailUrl":  "https://s3-alpha.figma.com/thumbnails/663326dc-88b4-405c-a66e-cf9537259706?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAQ4GOSFWC5D26EHQQ%2F20260614%2Fus-west-2%2Fs3%2Faws4_request\u0026X-Amz-Date=20260614T120000Z\u0026X-Amz-Expires=604800\u0026X-Amz-SignedHeaders=host\u0026X-Amz-Signature=69b3227a323642c4bded2b0917305159b50aef8f035b5edcbc3c972125126b46",
+    "version":  "2366014392935404682",
+    "role":  "viewer",
+    "editorType":  "figma",
+    "linkAccess":  "inherit"
+}

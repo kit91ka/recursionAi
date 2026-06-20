@@ -1,11 +1,19 @@
 {
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "env": {
+    "CLAUDE_CODE_MAX_RETRIES": "30",
+    "API_TIMEOUT_MS": "1800000",
+    "API_FORCE_IDLE_TIMEOUT": "0"
+  },
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \".claude/hooks/session-start.js\"",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.js\"",
             "statusMessage": "Loading AGENT_CONTEXT.md"
           }
         ]
@@ -16,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \".claude/hooks/stop-reminder.js\"",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/hooks/stop-reminder.js\"",
             "statusMessage": "Checking session log"
           }
         ]

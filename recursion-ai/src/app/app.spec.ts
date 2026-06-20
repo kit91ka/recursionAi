@@ -1,25 +1,33 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ConfirmationService, MessageService } from 'primeng/api';
-
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MessageService } from 'primeng/api';
 import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
-      providers: [
-        provideRouter([]),
-        provideNoopAnimations(),
-        MessageService,
-        ConfirmationService,
-      ],
+      imports: [App, NoopAnimationsModule],
+      providers: [MessageService],
     }).compileComponents();
   });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    expect(fixture.componentInstance).toBeTruthy();
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should contain router outlet', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+  });
+
+  it('should contain p-toast element', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('p-toast')).toBeTruthy();
   });
 });

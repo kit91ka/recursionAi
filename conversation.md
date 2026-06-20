@@ -6,10 +6,10 @@
 ---
 
 ## Сообщение 1 — Пользователь
-Используя `C:\Users\kit91\WebstormProjects\recursionAi\environment.ts` подключиться к Figma и
+Используя `recursionAi\environment.ts` подключиться к Figma и
 посмотреть страницу
 `https://www.figma.com/design/KCYaDH4HaImmOB7ZASq784/Zidium?node-id=0-1` —
-используя ТЗ и скиллы построить детальный план, записать его в `plan.txt`,
+используя ТЗ из project.txt и скиллы построить детальный план, записать его в `plan.txt`,
 а также сохранять переписку в отдельный файл.
 
 ## Уточнение 1 — Пользователь

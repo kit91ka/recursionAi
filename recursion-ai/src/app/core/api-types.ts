@@ -1,21 +1,26 @@
-/**
- * Дружелюбные алиасы для сгенерированных OpenAPI-типов с длинными именами.
- * Сам клиент (core/api) не редактируем — это слой адаптации имён.
- */
-import {
-  ZidiumWebServiceFrontCategoryDto,
-  ZidiumWebServiceFrontEditCategoryDto,
-  ZidiumWebServiceFrontDictionariesCategoriesDtoCategoryListDto,
-} from './api';
+export interface CategoryDto {
+  id: number;
+  name: string;
+}
 
-export type Category = ZidiumWebServiceFrontCategoryDto;
-export type EditCategory = ZidiumWebServiceFrontEditCategoryDto;
-export type CategoryList = ZidiumWebServiceFrontDictionariesCategoriesDtoCategoryListDto;
+export interface CategoryListDto {
+  items: CategoryDto[];
+  canEdit: boolean;
+}
 
-export type {
-  LogonRequestDto,
-  LogonResponseDto,
-  TokensResponseDto,
-  RefreshTokenRequestDto,
-  CurrentUserDto,
-} from './api';
+export interface LogonRequest {
+  login: string;
+  password: string;
+}
+
+export interface LogonResponse {
+  token: string;
+  refreshToken: string;
+  user: { name: string };
+}
+
+export interface ProblemDetails {
+  detail: string;
+  status: number;
+  title: string;
+}

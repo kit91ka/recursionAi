@@ -1,110 +1,61 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  OnInit,
-  signal,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
-
-import { ButtonModule } from 'primeng/button';
+import { Component, effect, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { FluidModule } from 'primeng/fluid';
 
-import { CategoriesService } from '../../core/api';
+import { ZidiumWebServiceFrontCategoryDto } from '../../core/api/model/zidiumWebServiceFrontCategoryDto.model';
 import { nameExistsValidator } from '../../shared/validators/name-exists.validator';
-import { CategoriesStore } from './categories.store';
 
 @Component({
-  selector: 'app-category-edit-dialog',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ButtonModule, DialogModule, InputTextModule],
+  selector: 'app-category-edit',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DialogModule,
+    ButtonModule,
+    InputTextModule,
+    FluidModule,
+  ],
   templateUrl: './category-edit.dialog.html',
+  styleUrl: './category-edit.dialog.scss',
 })
-export class CategoryEditDialog implements OnInit {
-  private readonly api = inject(CategoriesService);
-  private readonly store = inject(CategoriesStore);
-  private readonly router = inject(Router);
+export class CategoryEditDialog {
+  private readonly ref = inject(DynamicDialogRef);
+  readonly config = inject(DynamicDialogConfig);
+  readonly saved = signal(false);
 
-  /** Привязывается из route param ':id' (для /categories/new — undefined). */
-  readonly id = input<string>();
-
-  readonly editId = computed(() => {
-    const raw = this.id();
-    const num = raw != null ? Number(raw) : NaN;
-    return Number.isInteger(num) ? num : null;
-  });
-  readonly isEdit = computed(() => this.editId() !== null);
-  readonly canEdit = this.store.canEdit;
-
-  readonly visible = signal(true);
-  readonly saving = signal(false);
-  readonly loading = signal(false);
+  readonly item: ZidiumWebServiceFrontCategoryDto | null = this.config.data?.item ?? null;
+  readonly canEdit = this.item?.canEdit ?? true;
+  readonly isAdd = !this.item;
+  readonly id = this.item?.id ?? null;
 
   readonly form = new FormGroup({
-    name: new FormControl('', {
+    name: new FormControl(this.item?.name ?? '', {
       nonNullable: true,
       validators: [Validators.required],
-      asyncValidators: [nameExistsValidator(this.api, () => this.editId())],
+      asyncValidators: [nameExistsValidator(this.id)],
     }),
   });
 
-  readonly nameCtrl = this.form.controls.name;
-
-  ngOnInit(): void {
-    const id = this.editId();
-    if (id === null) {
-      return;
-    }
-    this.loading.set(true);
-    // Ошибку загрузки покажет глобальный errorInterceptor (toast); loading снимаем в finalize.
-    this.api.getById({ id })
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe((category) => this.nameCtrl.setValue(category.name));
+  constructor() {
+    effect(() => {
+      if (this.saved()) {
+        this.ref.close({ name: this.form.getRawValue().name });
+      }
+    });
   }
 
   save(): void {
-    if (this.form.invalid || this.saving()) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    const name = this.nameCtrl.getRawValue().trim();
-    const id = this.editId();
-    this.saving.set(true);
-    id !== null ? this.editCategory(id, name) : this.createCategory(name);
-  }
-
-  private editCategory(id: number, name: string): void {
-    this.api
-      .update({ id, zidiumWebServiceFrontEditCategoryDto: { name } })
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe(() => {
-        this.store.upsert({ id, name });
-        this.close();
-      });
-  }
-
-  private createCategory(name: string): void {
-    this.api
-      .add({ zidiumWebServiceFrontEditCategoryDto: { name } })
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe((newId) => {
-        this.store.upsert({ id: newId, name });
-        this.close();
-      });
+    if (this.form.invalid) return;
+    this.saved.set(true);
   }
 
   close(): void {
-    this.visible.set(false);
-    void this.router.navigate(['/categories']);
+    this.ref.close();
   }
 }

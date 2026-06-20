@@ -1,98 +1,109 @@
-import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import { CategoriesService } from '../../core/api';
-import { Category } from '../../core/api-types';
+import { Injectable, inject, signal } from '@angular/core';
+import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
+import { CategoriesService } from '../../core/api/api/categories.service';
+import { ZidiumWebServiceFrontCategoryDto } from '../../core/api/model/zidiumWebServiceFrontCategoryDto.model';
+import { ZidiumWebServiceFrontEditCategoryDto } from '../../core/api/model/zidiumWebServiceFrontEditCategoryDto.model';
 import { PAGE_SIZE } from '../../core/config/constants';
-import { finalize, Subscription } from 'rxjs';
 
-/**
- * Signal-стор справочника категорий: пагинация скроллом, поиск, сортировка,
- * иммутабельные upsert/remove. Источник истины для списка и модалок.
- */
 @Injectable({ providedIn: 'root' })
 export class CategoriesStore {
   private readonly api = inject(CategoriesService);
-  private readonly destroyRef = inject(DestroyRef);
 
-  readonly items = signal<Category[]>([]);
-  readonly canEdit = signal(false);
+  readonly items = signal<ZidiumWebServiceFrontCategoryDto[]>([]);
+  readonly canEdit = signal(true);
   readonly search = signal('');
   readonly sortDesc = signal(false);
   readonly loading = signal(false);
   readonly hasMore = signal(true);
+  readonly error = signal<string | null>(null);
 
   private pageNumber = 0;
-  private loadSub?: Subscription;
 
-  readonly isEmpty = computed(() => !this.loading() && this.items().length === 0);
-
-  /** Сброс пагинации и загрузка первой страницы. */
-  reload(): void {
-    // Отменяем запрос в полёте и снимаем loading, иначе гард в loadNextPage
-    // заблокирует свежую загрузку, а устаревший ответ затрёт список.
-    this.loadSub?.unsubscribe();
-    this.pageNumber = 0;
-    this.items.set([]);
-    this.hasMore.set(true);
-    this.loading.set(false);
-    this.loadNextPage();
-  }
-
-  /** Догрузка следующей страницы (защита от гонок через loading/hasMore). */
-  loadNextPage(): void {
+  loadPage(): Observable<void> {
     if (this.loading() || !this.hasMore()) {
-      return;
+      return of(undefined);
     }
-    this.loading.set(true);
 
-    const search = this.search().trim();
-    this.loadSub = this.api
-      .getAll({
-        search: search || undefined,
-        pageSize: PAGE_SIZE,
-        pageNumber: this.pageNumber,
-        sortDesc: this.sortDesc(),
-      })
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api
+      .getAll(this.search() || undefined, PAGE_SIZE, this.pageNumber, this.sortDesc())
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.canEdit.set(res.canAdd ?? true);
+          const newItems = res.items ?? [];
+          if (this.pageNumber === 0) {
+            this.items.set(newItems);
+          } else {
+            this.items.update((prev) => [...prev, ...newItems]);
+          }
+          this.hasMore.set(newItems.length >= PAGE_SIZE);
+          this.pageNumber++;
+        }),
+        map(() => undefined),
+        catchError((err) => {
+          this.error.set(err.error?.detail ?? 'Failed to load categories');
+          return of(undefined);
+        }),
         finalize(() => this.loading.set(false)),
-      )
-      .subscribe((res) => {
-        this.items.update((curr) => [...curr, ...res.items]);
-        this.canEdit.set(res.canEdit);
-        this.hasMore.set(res.items.length === PAGE_SIZE);
-        this.pageNumber++;
-      });
+      );
   }
 
   setSearch(value: string): void {
-    if (value === this.search()) {
-      return;
-    }
     this.search.set(value);
-    this.reload();
+    this.reset();
   }
 
   toggleSort(): void {
-    this.sortDesc.update((desc) => !desc);
-    this.reload();
+    this.sortDesc.update((v) => !v);
+    this.reset();
+  }
+
+  save(name: string, id?: number): Observable<void> {
+    const dto: ZidiumWebServiceFrontEditCategoryDto = { name };
+    const req$ = id != null ? this.api.update(id, dto) : this.api.add(dto);
+    return req$.pipe(
+      tap(() => {
+        this.items.set([]);
+        this.pageNumber = 0;
+        this.hasMore.set(true);
+        this.loadPage().subscribe();
+      }),
+      map(() => undefined),
+    );
+  }
+
+  remove(id: number): Observable<void> {
+    this.removeFromList(id);
+    return this.api._delete(id).pipe(
+      map(() => undefined),
+      catchError((err) => {
+        this.error.set(err.error?.detail ?? 'Failed to delete category');
+        return of(undefined);
+      }),
+    );
+  }
+
+  upsert(item: ZidiumWebServiceFrontCategoryDto): void {
+    this.items.update((prev) => {
+      const idx = prev.findIndex((i) => i.id === item.id);
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx] = item;
+        return copy;
+      }
+      return [item, ...prev];
+    });
   }
 
   removeFromList(id: number): void {
-    this.items.update((items) => items.filter((item) => item.id !== id));
+    this.items.update((prev) => prev.filter((i) => i.id !== id));
   }
 
-  /** Иммутабельное добавление/обновление записи в списке. */
-  upsert(category: Category): void {
-    this.items.update((items) => {
-      const index = items.findIndex((item) => item.id === category.id);
-      if (index === -1) {
-        return [...items, category];
-      }
-      const copy = [...items];
-      copy[index] = category;
-      return copy;
-    });
+  private reset(): void {
+    this.pageNumber = 0;
+    this.items.set([]);
+    this.hasMore.set(true);
   }
 }

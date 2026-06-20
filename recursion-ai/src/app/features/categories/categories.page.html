@@ -1,0 +1,91 @@
+<div class="categories-page">
+  <header class="categories-header">
+    <h1>Categories</h1>
+    @if (store.canEdit()) {
+      <a routerLink="./" [queryParams]="{ action: 'add' }" class="add-link">+ Add</a>
+    }
+  </header>
+
+  <div class="search-bar">
+    <p-iconfield>
+      <p-inputicon>
+        @if (searchValue) {
+          <i class="pi pi-times" (click)="clearSearch()" style="cursor: pointer"></i>
+        } @else {
+          <i class="pi pi-search"></i>
+        }
+      </p-inputicon>
+      <input
+        pInputText
+        [ngModel]="searchValue"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search"
+        class="search-input"
+      />
+    </p-iconfield>
+  </div>
+
+  @if (store.error()) {
+    <div class="error-banner">{{ store.error() }}</div>
+  }
+
+  <p-table
+    [value]="store.items()"
+    [loading]="store.loading() && store.items().length === 0"
+    [columns]="columns"
+    styleClass="p-datatable-sm"
+    [tableStyle]="{ 'min-width': '100%' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        @for (col of columns; track col.field) {
+          <th
+            [pSortableColumn]="col.field"
+            (click)="col.field === 'name' && onSort()"
+            [class.sortable]="col.field === 'name'"
+          >
+            {{ col.header }}
+            @if (col.field === 'name') {
+              <p-sortIcon [field]="col.field" />
+            }
+          </th>
+        }
+        @if (store.canEdit()) {
+          <th class="actions-cell">Actions</th>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-item>
+      <tr [class.clickable]="store.canEdit()" (click)="onRowClick(item)" style="cursor: pointer">
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td class="actions-cell">
+          @if (store.canEdit() && item.canDelete) {
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              (click)="confirmDelete(item); $event.stopPropagation()"
+              pTooltip="Delete"
+            />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="2" class="empty-message">No categories found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  @if (store.loading() && store.items().length > 0) {
+    <div class="loading-more">
+      <p-progressSpinner [style]="{ width: '24px', height: '24px' }" strokeWidth="4" />
+    </div>
+  }
+
+  <div #sentinel class="scroll-sentinel"></div>
+</div>

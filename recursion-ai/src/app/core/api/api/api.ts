@@ -1,10 +1,41 @@
-// Куратированный barrel. Исходный авто-сгенерированный re-export всех сервисов
-// давал коллизии имён *RequestParams (в спеке дублируются operationId между тегами,
-// что приводит к TS2308 при `export *`). Экспортируем только сервисы, реально
-// используемые приложением. Файл внесён в .openapi-generator-ignore, чтобы
-// перегенерация его не перезаписывала.
 export * from './categories.service';
 import { CategoriesService } from './categories.service';
+export * from './channels.service';
+import { ChannelsService } from './channels.service';
+export * from './componentEventTypes.service';
+import { ComponentEventTypesService } from './componentEventTypes.service';
+export * from './componentHeader.service';
+import { ComponentHeaderService } from './componentHeader.service';
+export * from './componentHealth.service';
+import { ComponentHealthService } from './componentHealth.service';
+export * from './componentHealthFormula.service';
+import { ComponentHealthFormulaService } from './componentHealthFormula.service';
+export * from './componentInfo.service';
+import { ComponentInfoService } from './componentInfo.service';
+export * from './componentLinks.service';
+import { ComponentLinksService } from './componentLinks.service';
+export * from './componentSettings.service';
+import { ComponentSettingsService } from './componentSettings.service';
+export * from './componentSubscriptions.service';
+import { ComponentSubscriptionsService } from './componentSubscriptions.service';
+export * from './componentTree.service';
+import { ComponentTreeService } from './componentTree.service';
+export * from './componentTypes.service';
+import { ComponentTypesService } from './componentTypes.service';
+export * from './indicatorTypes.service';
+import { IndicatorTypesService } from './indicatorTypes.service';
 export * from './logon.service';
 import { LogonService } from './logon.service';
-export const APIS = [CategoriesService, LogonService];
+export * from './periodicCheckTypes.service';
+import { PeriodicCheckTypesService } from './periodicCheckTypes.service';
+export * from './roles.service';
+import { RolesService } from './roles.service';
+export * from './selectors.service';
+import { SelectorsService } from './selectors.service';
+export * from './subscriptions.service';
+import { SubscriptionsService } from './subscriptions.service';
+export * from './userGroups.service';
+import { UserGroupsService } from './userGroups.service';
+export * from './users.service';
+import { UsersService } from './users.service';
+export const APIS = [CategoriesService, ChannelsService, ComponentEventTypesService, ComponentHeaderService, ComponentHealthService, ComponentHealthFormulaService, ComponentInfoService, ComponentLinksService, ComponentSettingsService, ComponentSubscriptionsService, ComponentTreeService, ComponentTypesService, IndicatorTypesService, LogonService, PeriodicCheckTypesService, RolesService, SelectorsService, SubscriptionsService, UserGroupsService, UsersService];

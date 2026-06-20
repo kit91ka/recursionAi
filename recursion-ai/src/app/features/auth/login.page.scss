@@ -1,62 +1,32 @@
-:host {
-  display: block;
-}
-
-.login-screen {
-  min-height: 100vh;
+.login-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: var(--color-neutral-bg);
-  padding: 1rem;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f5f5;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 380px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 2.5rem 2rem;
-  background: var(--color-surface);
-  border-radius: var(--radius-card);
-  box-shadow: 0 10px 30px rgba(38, 50, 56, 0.12);
-
-  &__title {
-    margin: 0 0 0.5rem;
-    text-align: center;
-    font-size: var(--text-page);
-    font-weight: 500;
-    color: var(--color-text);
-  }
-
-  &__server-error {
-    width: 100%;
-  }
-
-  &__submit {
-    align-self: center;
-    margin-top: 0.5rem;
-    min-width: 140px;
-    justify-content: center;
-  }
+.card-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  color: #263238;
 }
 
-.login-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+.field {
+  margin-bottom: 1rem;
 
   label {
+    display: block;
+    margin-bottom: 0.25rem;
     font-weight: 500;
-    color: var(--color-text);
+    font-size: 14px;
+    color: #263238;
   }
+}
 
-  // Полную ширину контролов даёт штатное свойство PrimeNG `fluid` (см. шаблон),
-  // без ::ng-deep-переопределений.
-
-  &__error {
-    color: var(--color-error);
-    font-size: 12px;
-  }
+.server-error {
+  display: block;
+  text-align: left;
 }

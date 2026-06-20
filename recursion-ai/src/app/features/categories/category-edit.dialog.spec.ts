@@ -1,91 +1,117 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
-import { of } from 'rxjs';
-
-import { CategoriesService } from '../../core/api';
-import { NAME_VALIDATION_DEBOUNCE_MS } from '../../core/config/constants';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { CategoryEditDialog } from './category-edit.dialog';
-import { CategoriesStore } from './categories.store';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
 
 describe('CategoryEditDialog', () => {
-  let fixture: ComponentFixture<CategoryEditDialog>;
-  let component: CategoryEditDialog;
-  let api: jasmine.SpyObj<CategoriesService>;
-  let router: jasmine.SpyObj<Router>;
-  let store: CategoriesStore;
+  let ref: jasmine.SpyObj<DynamicDialogRef>;
 
-  beforeEach(async () => {
-    api = jasmine.createSpyObj<CategoriesService>('CategoriesService', [
-      'getById',
-      'add',
-      'update',
-      'nameExists',
-      'getAll',
-    ]);
-    api.nameExists.and.returnValue(of(false) as any);
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-
-    await TestBed.configureTestingModule({
-      imports: [CategoryEditDialog],
-      providers: [
-        provideNoopAnimations(),
-        CategoriesStore,
-        { provide: CategoriesService, useValue: api },
-        { provide: Router, useValue: router },
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CategoryEditDialog);
-    component = fixture.componentInstance;
-    store = TestBed.inject(CategoriesStore);
-  });
-
-  it('is in Add mode without id and creates a category on save', fakeAsync(() => {
-    api.add.and.returnValue(of(42) as any);
-    fixture.detectChanges();
-
-    expect(component.isEdit()).toBeFalse();
-    component.nameCtrl.setValue('Fresh');
-    tick(NAME_VALIDATION_DEBOUNCE_MS);
-
-    component.save();
-
-    expect(api.add).toHaveBeenCalledWith({ zidiumWebServiceFrontEditCategoryDto: { name: 'Fresh' } });
-    expect(store.items().some((c) => c.id === 42 && c.name === 'Fresh')).toBeTrue();
-    expect(router.navigate).toHaveBeenCalledWith(['/categories']);
-  }));
-
-  it('is in Edit mode with id, loads the record and updates on save', fakeAsync(() => {
-    api.getById.and.returnValue(of({ id: 5, name: 'Old' }) as any);
-    api.update.and.returnValue(of(undefined) as any);
-    fixture.componentRef.setInput('id', '5');
-    fixture.detectChanges();
-
-    expect(component.isEdit()).toBeTrue();
-    expect(component.nameCtrl.value).toBe('Old');
-
-    component.nameCtrl.setValue('Updated');
-    tick(NAME_VALIDATION_DEBOUNCE_MS);
-    component.save();
-
-    expect(api.update).toHaveBeenCalledWith({
-      id: 5,
-      zidiumWebServiceFrontEditCategoryDto: { name: 'Updated' },
+  function createDialog(configData: any) {
+    TestBed.overrideProvider(DynamicDialogConfig, {
+      useValue: { data: configData },
     });
-    expect(router.navigate).toHaveBeenCalledWith(['/categories']);
-  }));
+    return TestBed.createComponent(CategoryEditDialog);
+  }
 
-  it('does not save an invalid (empty) form', () => {
-    fixture.detectChanges();
-    component.save();
-    expect(api.add).not.toHaveBeenCalled();
+  beforeEach(() => {
+    ref = jasmine.createSpyObj<DynamicDialogRef>('DynamicDialogRef', ['close']);
+
+    TestBed.configureTestingModule({
+      imports: [CategoryEditDialog, NoopAnimationsModule],
+      providers: [
+        { provide: DynamicDialogRef, useValue: ref },
+        {
+          provide: DynamicDialogConfig,
+          useValue: { data: { item: null, id: null, store: {} } },
+        },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
   });
 
-  it('close navigates back to the list', () => {
+  it('should create', () => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should show Add Category mode when no item', () => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
     fixture.detectChanges();
-    component.close();
-    expect(component.visible()).toBeFalse();
-    expect(router.navigate).toHaveBeenCalledWith(['/categories']);
+    expect(fixture.componentInstance.isAdd).toBeTrue();
+    expect(fixture.componentInstance.item).toBeNull();
+  });
+
+  it('should show Edit Category mode when item exists', () => {
+    const fixture = createDialog({
+      item: { id: 5, name: 'Test', canEdit: true, canDelete: true },
+      id: 5,
+      store: {},
+    });
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isAdd).toBeFalse();
+    expect(fixture.componentInstance.item?.id).toBe(5);
+  });
+
+  it('should display the id when editing', () => {
+    const fixture = createDialog({
+      item: { id: 5, name: 'Test', canEdit: true, canDelete: true },
+      id: 5,
+      store: {},
+    });
+    fixture.detectChanges();
+
+    const idDisplay = fixture.debugElement.query(By.css('.id-display'));
+    expect(idDisplay).toBeTruthy();
+    expect(idDisplay.nativeElement.textContent.trim()).toBe('5');
+  });
+
+  it('should disable submit when form is invalid (empty name)', () => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.form.invalid).toBeTrue();
+  });
+
+  it('should close dialog when close() is called', () => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
+    fixture.detectChanges();
+
+    fixture.componentInstance.close();
+    expect(ref.close).toHaveBeenCalled();
+  });
+
+  it('should close with name when save() with async validation succeeds', fakeAsync(() => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
+    fixture.detectChanges();
+
+    fixture.componentInstance.form.get('name')?.setValue('ValidName');
+    tick(400);
+
+    const httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne((r) => r.url.includes('/name-exists')).flush(false);
+    tick();
+
+    fixture.componentInstance.save();
+    fixture.detectChanges(); // triggers effect()
+    expect(ref.close).toHaveBeenCalledWith({ name: 'ValidName' });
+  }));
+
+  it('should show required error when name is empty and touched', () => {
+    const fixture = TestBed.createComponent(CategoryEditDialog);
+    fixture.detectChanges();
+
+    const nameControl = fixture.componentInstance.form.get('name');
+    nameControl?.markAsTouched();
+    nameControl?.setValue('');
+    fixture.detectChanges();
+
+    const errorEl = fixture.debugElement.query(By.css('.p-error'));
+    expect(errorEl).toBeTruthy();
+    expect(errorEl.nativeElement.textContent).toContain('Field is required');
   });
 });

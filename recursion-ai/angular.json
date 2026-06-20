@@ -38,8 +38,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "900kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -59,13 +59,15 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "recursion-ai:build:production"
             },
             "development": {
-              "buildTarget": "recursion-ai:build:development",
-              "proxyConfig": "proxy.conf.json"
+              "buildTarget": "recursion-ai:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,9 +78,6 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "codeCoverageExclude": [
-              "src/app/core/api/**"
-            ],
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -100,6 +99,6 @@
     }
   },
   "cli": {
-    "analytics": "426db6fe-c6e7-423b-a80d-4d546c5cc2a2"
+    "analytics": "7d0d8f69-e885-4e48-8937-07347744d1e6"
   }
 }

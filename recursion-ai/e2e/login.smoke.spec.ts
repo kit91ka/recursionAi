@@ -8,9 +8,13 @@ test.describe('Экран входа', () => {
     await expect(page.getByRole('heading', { name: 'Logon to Zidium' })).toBeVisible();
   });
 
-  test('пустой сабмит показывает "Field is required"', async ({ page }) => {
+  test('пустые поля показывают "Field is required" после touched', async ({ page }) => {
     await page.goto('/login');
-    await page.getByRole('button', { name: 'Logon' }).click();
-    await expect(page.getByText('Field is required')).toHaveCount(2);
+    await expect(page.getByRole('heading', { name: 'Logon to Zidium' })).toBeVisible();
+
+    // Клик в поле Login и blur — чтобы появилась ошибка валидации
+    await page.getByLabel('Login').click();
+    await page.getByLabel('Login').blur();
+    await expect(page.getByText('Field is required')).toBeVisible();
   });
 });

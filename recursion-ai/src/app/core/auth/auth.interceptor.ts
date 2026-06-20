@@ -1,73 +1,55 @@
-import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
-
+import { TokenStorage } from './token-storage.service';
 import { AuthService } from './auth.service';
 
-/** Single-flight состояние обновления токена, общее на все параллельные запросы. */
+const SKIP_PATHS = ['/front/logon'];
+
 let isRefreshing = false;
-const refreshedToken$ = new BehaviorSubject<string | null>(null);
+const refreshQueue = new BehaviorSubject<string | null>(null);
 
-/** Эндпоинты авторизации не требуют Bearer и не запускают refresh-петлю. */
-function isAuthEndpoint(url: string): boolean {
-  return url.includes('/front/logon');
-}
-
-function withToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
-  return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-}
-
-/**
- * Функциональный интерсептор: добавляет Authorization, на 401 обновляет токен
- * (single-flight) и повторяет исходный запрос; при провале refresh — logout.
- */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
+  const tokenStorage = inject(TokenStorage);
+  const authService = inject(AuthService);
 
-  if (isAuthEndpoint(req.url)) {
-    return next(req);
-  }
+  const isAuthRequest = SKIP_PATHS.some((p) => req.url.includes(p));
 
-  const token = auth.token;
-  const authReq = token ? withToken(req, token) : req;
+  const reqWithAuth = isAuthRequest
+    ? req
+    : req.clone({ setHeaders: { Authorization: `Bearer ${tokenStorage.token()}` } });
 
-  return next(authReq).pipe(
-    catchError((error: unknown) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && token) {
-        return handle401(req, next, auth);
+  return next(reqWithAuth).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status !== 401 || isAuthRequest) {
+        return throwError(() => error);
       }
-      return throwError(() => error);
+
+      if (!isRefreshing) {
+        isRefreshing = true;
+        refreshQueue.next(null);
+
+        return authService.refresh().pipe(
+          switchMap((newToken) => {
+            isRefreshing = false;
+            refreshQueue.next(newToken);
+            return next(req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } }));
+          }),
+          catchError((err) => {
+            isRefreshing = false;
+            refreshQueue.next(null);
+            return throwError(() => err);
+          }),
+        );
+      }
+
+      return refreshQueue.pipe(
+        filter((token) => token !== null),
+        take(1),
+        switchMap((token) =>
+          next(req.clone({ setHeaders: { Authorization: `Bearer ${token!}` } })),
+        ),
+      );
     }),
   );
 };
-
-function handle401(
-  req: HttpRequest<unknown>,
-  next: Parameters<HttpInterceptorFn>[1],
-  auth: AuthService,
-) {
-  if (isRefreshing) {
-    // Ждём завершения текущего refresh, затем повторяем с новым токеном.
-    return refreshedToken$.pipe(
-      filter((t): t is string => t !== null),
-      take(1),
-      switchMap((newToken) => next(withToken(req, newToken))),
-    );
-  }
-
-  isRefreshing = true;
-  refreshedToken$.next(null);
-
-  return auth.refresh().pipe(
-    switchMap((tokens) => {
-      isRefreshing = false;
-      refreshedToken$.next(tokens.token);
-      return next(withToken(req, tokens.token));
-    }),
-    catchError((error: unknown) => {
-      isRefreshing = false;
-      auth.logout();
-      return throwError(() => error);
-    }),
-  );
-}

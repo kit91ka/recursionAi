@@ -1,18 +1,12 @@
-import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+﻿import { HttpContextToken, HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, EMPTY, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 
-/**
- * Контекст-флаг: пометить запрос как фоновый, чтобы глобальный перехватчик
- * не показывал toast, а пробросил ошибку дальше для локальной обработки
- * (например, async-валидатор уникальности имени со своим catchError).
- */
 export const SKIP_ERROR_TOAST = new HttpContextToken<boolean>(() => false);
 
-const DEFAULT_ERROR = 'Произошла ошибка. Повторите попытку.';
+const DEFAULT_ERROR = 'An error occurred. Please try again.';
 
-/** Достаёт человекочитаемый текст из тела ответа (RFC 7807) или статуса. */
 function extractMessage(error: HttpErrorResponse): string {
   const body: unknown = error.error;
 
@@ -31,14 +25,6 @@ function extractMessage(error: HttpErrorResponse): string {
   return error.statusText?.trim() || DEFAULT_ERROR;
 }
 
-/**
- * Глобальная обработка ошибок HTTP: показывает текст ошибки в primeng/toast
- * и гасит поток (EMPTY), чтобы подписчикам не требовался error-колбэк.
- * Запросы с флагом SKIP_ERROR_TOAST не трогаются — ошибка пробрасывается дальше.
- *
- * Регистрируется самым внешним, чтобы видеть итоговую ошибку уже после того,
- * как authInterceptor выполнил refresh-токена и повтор запроса на 401.
- */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const messages = inject(MessageService);
 
@@ -50,7 +36,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       messages.add({
         severity: 'error',
-        summary: 'Ошибка',
+        summary: 'Error',
         detail: extractMessage(error),
       });
       return EMPTY;

@@ -8,11 +8,12 @@
 Реализовать справочник категорий - просмотр всех записей, добавление, изменение и удаление записей.
 
 Макеты: https://www.figma.com/design/KCYaDH4HaImmOB7ZASq784/Zidium?node-id=1508-21270&t=ibK1mdwpvUswwdBb-1
+токен для MCP к фигме находится в C:\Users\user\WebstormProjects\recursionAi\environment.ts
 Макеты обощённые для всех справочников, у каждого конкретного справочника свои поля.
 
 ## Backend
 
-Swagger: https://zidium3-backend.zidium.net/swagger/index.html?urls.primaryName=Front
+Swagger: https://zidium3-backend.zidium.net/swagger/indexz.html?urls.primaryName=Front
 Url: https://zidium3-backend.zidium.net/
 
 Api импортировать с помощью пакета openapitools/openapi-generator-cli.
@@ -22,6 +23,7 @@ Api импортировать с помощью пакета openapitools/opena
 Url в браузере: /categories
 
 Макет "Справочник".
+
 
 Заголовок - "Categories".
 

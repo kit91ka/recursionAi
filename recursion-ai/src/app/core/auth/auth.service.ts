@@ -1,64 +1,52 @@
-import { HttpContext } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
+import { LogonService } from '../api/api/logon.service';
+import { TokenStorage } from './token-storage.service';
 
-import { CurrentUserDto, LogonService } from '../api';
-import { SKIP_ERROR_TOAST } from '../http/error.interceptor';
-import { TokenStorage } from './token-storage';
-
-/**
- * Управление сессией: вход, обновление токена, выход, текущий пользователь.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly logonApi = inject(LogonService);
-  private readonly storage = inject(TokenStorage);
+  private readonly logonService = inject(LogonService);
+  private readonly tokenStorage = inject(TokenStorage);
   private readonly router = inject(Router);
 
-  private readonly _currentUser = signal<CurrentUserDto | null>(null);
-  readonly currentUser = this._currentUser.asReadonly();
+  readonly isAuthenticated = this.tokenStorage.token.asReadonly();
 
-  /** Авторизован, если есть access-token. */
-  readonly isAuthenticated = computed(() => this.storage.token() !== null);
-
-  /** Текущий токен (для interceptor). */
-  get token(): string | null {
-    return this.storage.token();
+  logon(login: string, password: string): Observable<void> {
+    return this.logonService.logon({ login, password }).pipe(
+      tap((res) => {
+        this.tokenStorage.setTokens(res.token!, res.refreshToken!, res.user!.displayName!);
+      }),
+      map(() => undefined),
+    );
   }
 
-  logon(login: string, password: string): Observable<unknown> {
-    // Ошибку входа показывает сама форма (inline под полем Password), поэтому
-    // запрос помечен SKIP_ERROR_TOAST — глобальный errorInterceptor его не трогает.
-    const context = new HttpContext().set(SKIP_ERROR_TOAST, true);
-    return this.logonApi
-      .logon({ logonRequestDto: { login, password } }, 'body', false, { context })
-      .pipe(
-        tap((res) => {
-          this.storage.setTokens(res.token, res.refreshToken);
-          this._currentUser.set(res.user);
-        }),
-      );
-  }
-
-  /** Обновление пары токенов по refresh-токену. */
-  refresh(): Observable<{ token: string; refreshToken: string }> {
-    const refreshToken = this.storage.refreshToken;
+  refresh(): Observable<string> {
+    const refreshToken = this.tokenStorage.refreshToken();
     if (!refreshToken) {
-      throw new Error('No refresh token available');
+      this.logout();
+      return throwError(() => new Error('No refresh token'));
     }
-    return this.logonApi
-      .refreshToken({ refreshTokenRequestDto: { refreshToken } })
-      .pipe(tap((res) => this.storage.setTokens(res.token, res.refreshToken)));
-  }
-
-  loadCurrentUser(): Observable<CurrentUserDto> {
-    return this.logonApi.getCurrentUser().pipe(tap((user) => this._currentUser.set(user)));
+    return this.logonService.refreshToken({ refreshToken }).pipe(
+      tap((res) => {
+        if (res.token && res.refreshToken) {
+          this.tokenStorage.setTokens(
+            res.token,
+            res.refreshToken,
+            this.tokenStorage.userName() ?? '',
+          );
+        }
+      }),
+      map((res) => res.token!),
+      catchError((err) => {
+        this.logout();
+        return throwError(() => err);
+      }),
+    );
   }
 
   logout(): void {
-    this.storage.clear();
-    this._currentUser.set(null);
-    void this.router.navigate(['/login']);
+    this.tokenStorage.clear();
+    this.router.navigate(['/login']);
   }
 }
