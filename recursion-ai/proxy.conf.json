@@ -1,8 +1,0 @@
-{
-  "/front": {
-    "target": "https://zidium3-backend.zidium.net",
-    "secure": true,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  }
-}
