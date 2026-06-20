@@ -1,0 +1,46 @@
+Интерактивный watchdog для терминала
+Дата создания: 2026-06-11
+
+Цель
+Запускать агент/CLI через wrapper, который читает stdout/stderr и при появлении текста:
+
+API Error: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()
+
+автоматически вводит:
+
+продолжай
+
+и нажимает Enter.
+
+Файл скрипта
+scripts/watchdog-terminal.mjs
+
+Базовый запуск
+node scripts/watchdog-terminal.mjs -- <команда> [аргументы]
+
+Пример для Claude CLI
+node scripts/watchdog-terminal.mjs -- claude
+
+Пример с явным автоответом
+node scripts/watchdog-terminal.mjs --reply "продолжай" -- claude
+
+Пример с другим текстом ошибки
+node scripts/watchdog-terminal.mjs --pattern "текст ошибки" --reply "продолжай" -- claude
+
+Что делает скрипт
+1. Запускает указанную команду.
+2. Показывает вывод команды в текущем терминале.
+3. Дублирует вывод в logs/watchdog-terminal-*.log.
+4. Читает ручной ввод пользователя и пересылает его в запущенный процесс.
+5. При совпадении с текстом ошибки отправляет в stdin строку "продолжай" и Enter.
+6. Пишет события запуска, совпадения и завершения в этот файл.
+
+Важное ограничение
+Это pipe-based wrapper, а не полноценный PTY. Для большинства CLI, которые читают stdin, этого достаточно. Если конкретный агент требует настоящий TTY/PTY и отказывается работать через pipe, следующий шаг - заменить реализацию на node-pty или отдельный terminal automation layer.
+
+Точка продолжения при сбое
+1. Открыть последний logs/watchdog-terminal-*.log.
+2. Найти последнюю строку [watchdog ...].
+3. Если процесс завершился, повторить команду запуска.
+4. Если видно, что агент не принял автоответ, проверить, требует ли он настоящий TTY.
+

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Альтернативы Claude Code для frontend-прототипирования — сравнение 2026-06</title>
+<style>
+  /* ============ ТОКЕНЫ ============ */
+  :root {
+    --bg: #0e1116;
+    --bg-slide: #141922;
+    --surface: #1b2230;
+    --surface-2: #222b3d;
+    --border: #2e3a52;
+    --text: #e8edf6;
+    --text-dim: #9aa7bd;
+    --accent: #4ea1ff;
+    --accent-2: #8bd0ff;
+    --good: #3ecf8e;
+    --warn: #f0b429;
+    --bad: #f0566a;
+    --unknown: #8a93a6;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    overflow: hidden;
+  }
+
+  /* ============ КАРКАС СЛАЙДОВ ============ */
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: clamp(24px, 4vw, 56px) clamp(28px, 6vw, 96px);
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(78,161,255,.08), transparent 60%),
+      var(--bg-slide);
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ============ ТИПОГРАФИКА ============ */
+  .slide h1 {
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    line-height: 1.12; letter-spacing: -0.02em;
+    margin-bottom: .5em;
+  }
+  .slide h2 {
+    font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+    letter-spacing: -0.01em;
+    margin-bottom: .8em;
+    display: flex; align-items: center; gap: .5em;
+  }
+  .slide h2::before {
+    content: ""; width: 6px; height: 1.1em; border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    flex: none;
+  }
+  .slide h3 { font-size: 1.1rem; margin-bottom: .5em; color: var(--accent-2); }
+  .lead { font-size: clamp(1.05rem, 1.8vw, 1.35rem); color: var(--text-dim); max-width: 60ch; }
+  .small { font-size: .85rem; color: var(--text-dim); }
+  ul.bullets { list-style: none; display: grid; gap: .55em; font-size: clamp(.95rem, 1.5vw, 1.15rem); }
+  ul.bullets li { padding-left: 1.4em; position: relative; }
+  ul.bullets li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+  .kicker {
+    text-transform: uppercase; letter-spacing: .14em; font-size: .78rem;
+    color: var(--accent); margin-bottom: 1.2em; font-weight: 600;
+  }
+
+  /* ============ КАРТОЧКИ И СЕТКИ ============ */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+  }
+  .card h3 { margin-bottom: .6em; }
+  .card ol { padding-left: 1.4em; display: grid; gap: .45em; font-size: clamp(.9rem, 1.4vw, 1.05rem); }
+  .card ol li::marker { color: var(--accent); font-weight: 700; }
+  .card.accent { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+
+  /* ============ БЕЙДЖИ И СТАТУСЫ ============ */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: .75rem; font-weight: 600; letter-spacing: .03em;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-dim);
+  }
+  .badge.good { color: var(--good); border-color: var(--good); }
+  .badge.warn { color: var(--warn); border-color: var(--warn); }
+  .badge.bad { color: var(--bad); border-color: var(--bad); }
+  .badge.info { color: var(--accent-2); border-color: var(--accent); }
+
+  /* статусы фич: + ~ - ? */
+  .s { font-family: var(--mono); font-weight: 700; text-align: center; }
+  .s-yes { color: var(--good); }
+  .s-part { color: var(--warn); }
+  .s-no { color: var(--bad); }
+  .s-unk { color: var(--unknown); }
+
+  .pro, .con { padding-left: 1.5em; position: relative; }
+  .pro::before { content: "+"; position: absolute; left: .2em; color: var(--good); font-weight: 700; }
+  .con::before { content: "−"; position: absolute; left: .2em; color: var(--bad); font-weight: 700; }
+
+  /* ============ ТАБЛИЦЫ ============ */
+  table.matrix {
+    width: 100%; border-collapse: collapse; font-size: clamp(.72rem, 1.15vw, .95rem);
+  }
+  table.matrix th, table.matrix td {
+    padding: .45em .6em; border-bottom: 1px solid var(--border);
+  }
+  table.matrix th {
+    text-align: left; color: var(--accent-2); font-weight: 600;
+    position: sticky; top: 0; background: var(--bg-slide);
+  }
+  table.matrix th:not(:first-child), table.matrix td:not(:first-child) { text-align: center; }
+  table.matrix tr:hover td { background: rgba(78,161,255,.06); }
+  table.matrix td:first-child { color: var(--text-dim); }
+
+  /* ============ НАВИГАЦИЯ ============ */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 24px; z-index: 10;
+    background: linear-gradient(180deg, transparent, rgba(14,17,22,.92) 40%);
+    font-size: .85rem; color: var(--text-dim);
+  }
+  .nav button {
+    background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 16px; cursor: pointer; font-size: .9rem;
+  }
+  .nav button:hover { border-color: var(--accent); color: var(--accent-2); }
+  .nav .counter { font-family: var(--mono); }
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; z-index: 11;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width .25s ease;
+  }
+  .footer-tag {
+    position: fixed; top: 14px; right: 20px; z-index: 10;
+    font-size: .72rem; color: var(--text-dim); font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="footer-tag">claude-alternatives · 2026-06-11</div>
+<div class="deck" id="deck">
+<!-- SLIDES:PART1 -->
+<!-- SLIDES:PART2 -->
+<!-- SLIDES:PART3 -->
+<!-- SLIDES:PART4 -->
+</div>
+<div class="nav">
+  <button id="prev">← Назад</button>
+  <span class="counter" id="counter">1 / ?</span>
+  <button id="next">Вперёд →</button>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[i].classList.remove('active');
+    i = n;
+    slides[i].classList.add('active');
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    location.hash = 's' + (i + 1);
+  }
+  document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('next').addEventListener('click', function () { show(i + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  var m = location.hash.match(/^#s(\d+)$/);
+  slides[0].classList.add('active');
+  show(m ? Math.min(slides.length - 1, Math.max(0, parseInt(m[1], 10) - 1)) : 0);
+})();
+</script>
+</body>
+</html>

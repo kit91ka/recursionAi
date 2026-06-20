@@ -1,0 +1,439 @@
+x<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Замена Claude Code: методика и shortlist для Angular-команды</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --slide: #121821;
+    --surface: #1a2330;
+    --surface-2: #222d3d;
+    --border: #334155;
+    --text: #eef4ff;
+    --muted: #a6b4c8;
+    --accent: #50b4ff;
+    --accent-2: #8bd7ff;
+    --accent-dim: rgba(80, 180, 255, .12);
+    --good: #35d399;
+    --warn: #f0b84c;
+    --bad: #f46d75;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0; display: none; flex-direction: column;
+    padding: clamp(24px, 4vw, 52px) clamp(28px, 6vw, 92px) 76px;
+    background: var(--slide); overflow-y: auto;
+  }
+  .slide.active { display: flex; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  h1 { font-size: clamp(2rem, 4.4vw, 3.25rem); line-height: 1.1; max-width: 22ch; margin-bottom: .45em; }
+  h2 { font-size: clamp(1.32rem, 2.35vw, 1.88rem); line-height: 1.22; max-width: 40ch; margin-bottom: .9em; }
+  h3 { font-size: 1.02rem; margin-bottom: .5em; }
+  p { line-height: 1.45; }
+  .lead { color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.2rem); max-width: 72ch; }
+  .small { color: var(--muted); font-size: .86rem; }
+  .kicker { color: var(--muted); text-transform: uppercase; letter-spacing: .15em; font-size: .74rem; font-weight: 700; margin-bottom: 1.1em; }
+  .kicker b { color: var(--accent); }
+  .spacer { flex: 1; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 1000px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--accent-dim), var(--surface));
+    border: 1px solid var(--accent); border-radius: 8px; padding: 20px 24px;
+  }
+  .metric { display: flex; gap: 10px; flex-wrap: wrap; margin: .8em 0; }
+  .pill {
+    border: 1px solid var(--border); background: var(--surface-2); border-radius: 999px;
+    padding: 4px 10px; font-size: .78rem; color: var(--muted);
+  }
+  .pill.good { color: var(--good); border-color: var(--good); }
+  .pill.warn { color: var(--warn); border-color: var(--warn); }
+  .pill.bad { color: var(--bad); border-color: var(--bad); }
+  ul { list-style: none; display: grid; gap: .45em; }
+  li { position: relative; padding-left: 1.2em; color: var(--muted); }
+  li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: clamp(.74rem, 1.08vw, .94rem); }
+  th, td { padding: .55em .62em; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { text-align: left; color: var(--muted); font-weight: 650; }
+  td:not(:first-child), th:not(:first-child) { text-align: center; }
+  td:first-child { color: var(--text); font-weight: 650; }
+  .score-good { color: var(--good); font-weight: 700; }
+  .score-mid { color: var(--warn); font-weight: 700; }
+  .score-bad { color: var(--bad); font-weight: 700; }
+  .note {
+    border-left: 4px solid var(--accent); background: var(--accent-dim);
+    padding: 10px 14px; border-radius: 0 8px 8px 0; color: var(--muted);
+  }
+  .formula {
+    background: #0f1621; border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; font-family: var(--mono); color: var(--accent-2);
+  }
+  .bar { height: 8px; border-radius: 999px; background: #263241; overflow: hidden; margin-top: 5px; }
+  .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--good)); }
+  .scorecard { display: grid; gap: 10px; }
+  .score-row { display: grid; grid-template-columns: 1.1fr 52px 2fr; gap: 12px; align-items: center; color: var(--muted); font-size: .9rem; }
+  .score-row b { color: var(--text); }
+  .footer-tag { position: fixed; top: 14px; right: 20px; z-index: 20; font-size: .72rem; color: var(--muted); font-family: var(--mono); }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; z-index: 21; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s ease; }
+  .nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 24px; background: linear-gradient(180deg, transparent, rgba(13,17,23,.95) 45%);
+    color: var(--muted); font-size: .85rem;
+  }
+  .nav button {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    border-radius: 8px; padding: 8px 16px; cursor: pointer;
+  }
+  .nav button:hover { border-color: var(--accent); color: var(--accent-2); }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="footer-tag">multi-agent scoring · 2026-06-14</div>
+<div class="deck" id="deck">
+
+<section class="slide">
+  <div class="spacer"></div>
+  <div class="kicker"><b>Задача</b></div>
+  <h1>Замена Claude Code для Angular multi-agent workflow</h1>
+  <p class="lead">Эта версия раскрывает методику: какие роли оценивали кандидатов, какие подметрики вошли в score, как считалась итоговая оценка и почему stars не равны пригодности для команды.</p>
+  <div class="spacer"></div>
+  <p class="small">Основа: `docs/claude_alternatives_multiagent_review.md` + GitHub API на 2026-06-14.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Методика</b> · что означают числа</div>
+  <h2>Score не является benchmark-результатом: это desk-review fit score, который должен быть подтверждён пилотом</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Что оценивали</h3>
+      <ul>
+        <li>Заявленные возможности в официальных docs/GitHub.</li>
+        <li>Соответствие 10 критериям multi-agent замены Claude.</li>
+        <li>Пригодность для Angular/Nx, Figma, design-system и CI workflow.</li>
+        <li>Риски внедрения, безопасности, поддержки и ownership.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Что не оценивали</h3>
+      <ul>
+        <li>Не запускали одинаковый live benchmark на вашем репозитории.</li>
+        <li>Не мерили фактический pass rate build/test/lint.</li>
+        <li>Не считали latency/cost по реальным задачам.</li>
+        <li>Не проводили security review MCP-интеграций.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note" style="margin-top:1.1em">Интерпретация: score помогает выбрать shortlist для пилота, а не заменить пилот.</div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Формула</b> · как считалась оценка</div>
+  <h2>Итоговый score = среднее четырёх ролевых оценок; stars идут отдельно и не входят в формулу</h2>
+  <div class="formula">
+    RoleScore = average(подметрики роли)<br>
+    TotalScore = average(AgentProtocol, AngularWorkflow, FigmaDesignSystem, PlatformSecurityEconomics)<br>
+    GitHubStars = traction signal, вес 0%
+  </div>
+  <div class="grid-4" style="margin-top:1em">
+    <div class="card"><h3>Agent protocol</h3><p class="small">5 подметрик: роль, протокол, координация, tool-use, контекст/память.</p></div>
+    <div class="card"><h3>Angular workflow</h3><p class="small">7 подметрик: Angular/Nx, правила, поиск файлов, planner split, diff, review, lint/test/build.</p></div>
+    <div class="card"><h3>Figma / DS</h3><p class="small">5 подметрик: Figma, MCP/screenshot, preview, design-system/a11y, security posture.</p></div>
+    <div class="card"><h3>Platform</h3><p class="small">6 подметрик: observability, security, economics, rollout speed, internal support, product support.</p></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Шкала</b> · rubric 0-5</div>
+  <h2>Оценка ставилась по пригодности к роли, а не по общей популярности инструмента</h2>
+  <table>
+    <thead><tr><th>Score</th><th>Интерпретация</th><th>Типичный смысл для пилота</th></tr></thead>
+    <tbody>
+      <tr><td class="score-good">5</td><td>Полностью закрывает роль, зрелый workflow, понятный production path.</td><td>Можно брать как основной кандидат.</td></tr>
+      <tr><td class="score-good">4</td><td>Хороший fit, есть отдельные риски или требуется настройка.</td><td>Годится для shortlist.</td></tr>
+      <tr><td class="score-mid">3</td><td>Работает только в части сценариев или требует внешней обвязки.</td><td>Вспомогательная роль или ограниченный пилот.</td></tr>
+      <tr><td class="score-mid">2</td><td>Сильные ограничения по роли; много ручной координации.</td><td>Не основной кандидат.</td></tr>
+      <tr><td class="score-bad">1</td><td>Критический риск поддержки, безопасности или product health.</td><td>Исключить или оставить как reference.</td></tr>
+      <tr><td class="score-bad">0</td><td>Неприемлемо для production rollout.</td><td>Hard stop.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Критерии</b> · как 10 пунктов разложены по оценочным блокам</div>
+  <h2>Названия оценочных блоков совпадают с колонками итоговой матрицы на следующем слайде</h2>
+  <table>
+    <thead><tr><th>Оценочный блок</th><th>Экспертная линза</th><th>Критерии</th><th>Что проверялось</th></tr></thead>
+    <tbody>
+      <tr><td><b>Protocol</b></td><td>Agent Protocol Architect</td><td>1, 2, 3, 5, 6</td><td>Роль агента, tool/function calling, structured output, координация, retry/failure handling, context/memory.</td></tr>
+      <tr><td><b>Angular</b></td><td>Angular Frontend Architect</td><td>4, 7 + Angular</td><td>Angular/Nx/monorepo, multi-file diff, templates/styles/specs, RxJS, forms, routing, i18n, lint/test/build.</td></tr>
+      <tr><td><b>Figma/DS</b></td><td>Design-System / Figma Reviewer</td><td>Figma + 7, 9</td><td>Figma MCP/Dev Mode/screenshot, browser preview, tokens, Storybook, a11y, запрет произвольного UI.</td></tr>
+      <tr><td><b>Platform</b></td><td>Platform Owner</td><td>8, 9, 10</td><td>Observability, audit, RBAC, sandbox, secrets, cost, latency, internal ownership, product health.</td></tr>
+    </tbody>
+  </table>
+  <div class="note" style="margin-top:.9em">
+    <b>Как читать #s6:</b> значения в колонках <b>Protocol</b>, <b>Angular</b>, <b>Figma/DS</b> и <b>Platform</b> — это средние оценки одноимённых оценочных блоков выше. <b>Расшифровка критериев:</b>
+    1&nbsp;— роль агента;
+    2&nbsp;— протокол / structured output;
+    3&nbsp;— координация;
+    4&nbsp;— Angular/Nx workflow;
+    5&nbsp;— tool-use / function calling;
+    6&nbsp;— контекст и память;
+    7&nbsp;— implementation workflow: diff, review, lint/test/build;
+    8&nbsp;— observability / audit / security;
+    9&nbsp;— Figma / design-system / browser preview;
+    10&nbsp;— rollout, экономика и поддержка продукта.
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Сводка</b> · итоговая матрица</div>
+  <h2>Cline и OpenHands лидируют по fit; Hermes лидирует по stars, но не по readiness</h2>
+  <table>
+    <thead>
+      <tr><th>Кандидат</th><th>GitHub stars</th><th>Protocol</th><th>Angular</th><th>Figma/DS</th><th>Platform</th><th>Total</th><th>Рекомендованная роль</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Cline</td><td>63,243</td><td>4.0</td><td>4.4</td><td>4.2</td><td>4.1</td><td class="score-good">4.2</td><td>IDE agent</td></tr>
+      <tr><td>OpenHands</td><td>76,967</td><td>4.4</td><td>4.1</td><td>4.2</td><td>3.8</td><td class="score-good">4.1</td><td>Platform agent</td></tr>
+      <tr><td>Hermes Agent</td><td>193,004</td><td>4.2</td><td>3.9</td><td>3.6</td><td>2.8</td><td class="score-mid">3.6</td><td>R&D runtime</td></tr>
+      <tr><td>Continue</td><td>33,681</td><td>2.4</td><td>3.5</td><td>3.4</td><td>3.8</td><td class="score-mid">3.3</td><td>PR checks</td></tr>
+      <tr><td>Aider</td><td>46,182</td><td>2.4</td><td>3.9</td><td>2.2</td><td>3.6</td><td class="score-mid">3.0</td><td>Tactical CLI</td></tr>
+      <tr><td>Roo Code</td><td>24,232</td><td>1.4</td><td>3.0</td><td>2.0</td><td>0.8</td><td class="score-bad">1.8</td><td>Exclude</td></tr>
+    </tbody>
+  </table>
+  <p class="small" style="margin-top:.9em">Stars отражают traction и риск adoption, но не заменяют security, governance, Angular/Figma readiness и product support.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Cline</b> · почему 4.2</div>
+  <h2>Высокая оценка за daily IDE workflow: контроль diff, Angular context, Figma MCP и быстрый rollout</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>4.0</span><div><div class="bar"><span style="width:80%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>4.4</span><div><div class="bar"><span style="width:88%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>4.2</span><div><div class="bar"><span style="width:84%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>4.1</span><div><div class="bar"><span style="width:82%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Angular 4.4: IDE-контекст, multi-file edit, terminal build/test, rules и checkpoints.</li>
+        <li>Figma 4.2: MCP + screenshot + локальные design-system instructions; нужен жёсткий tool allowlist.</li>
+        <li>Platform 4.1: быстрее внедряется, но требует настройки governance и внутреннего ownership.</li>
+      </ul>
+      <div class="metric"><span class="pill good">63,243 stars</span><span class="pill good">IDE pilot</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>OpenHands</b> · почему 4.1</div>
+  <h2>Сильнее как SDLC-платформа, чем как ежедневный IDE-помощник</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>4.4</span><div><div class="bar"><span style="width:88%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>4.1</span><div><div class="bar"><span style="width:82%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>4.2</span><div><div class="bar"><span style="width:84%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>3.8</span><div><div class="bar"><span style="width:76%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Protocol 4.4: platform/SDK/sandbox лучше всего подходят для оркестрации.</li>
+        <li>Figma 4.2: browser preview и app tab помогают проверять UI, Storybook и a11y.</li>
+        <li>Platform 3.8: сильный enterprise path, но setup/ops тяжелее IDE-extension.</li>
+      </ul>
+      <div class="metric"><span class="pill good">76,967 stars</span><span class="pill good">Platform pilot</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Hermes Agent</b> · почему 3.6</div>
+  <h2>Мощный traction и agent-runtime идея, но readiness ограничен рисками внедрения</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>4.2</span><div><div class="bar"><span style="width:84%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>3.9</span><div><div class="bar"><span style="width:78%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>3.6</span><div><div class="bar"><span style="width:72%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>2.8</span><div><div class="bar"><span style="width:56%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Protocol 4.2: memory, subagents, sandbox/browser хорошо ложатся на multi-agent runtime.</li>
+        <li>Angular/Figma ниже: меньше доказанного IDE/DS workflow и больше guardrails придётся строить самим.</li>
+        <li>Platform 2.8: проверить security hardening, release cadence, audit и enterprise controls.</li>
+      </ul>
+      <div class="metric"><span class="pill good">193,004 stars</span><span class="pill warn">R&D only</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Aider</b> · почему 3.0</div>
+  <h2>Хороший tactical executor для git-first правок, но слабый orchestrator</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>2.4</span><div><div class="bar"><span style="width:48%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>3.9</span><div><div class="bar"><span style="width:78%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>2.2</span><div><div class="bar"><span style="width:44%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>3.6</span><div><div class="bar"><span style="width:72%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Angular 3.9: repo-map, minimal diff, lint/test loops хороши для точечных задач.</li>
+        <li>Protocol 2.4: это executor, а не полноценная мультиагентная платформа.</li>
+        <li>Figma 2.2: нет зрелого MCP/preview workflow, контроль нужно выносить в CI.</li>
+      </ul>
+      <div class="metric"><span class="pill good">46,182 stars</span><span class="pill">Tactical CLI</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Continue</b> · почему 3.3</div>
+  <h2>Лучший fit как PR governance layer, не как основной coder</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>2.4</span><div><div class="bar"><span style="width:48%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>3.5</span><div><div class="bar"><span style="width:70%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>3.4</span><div><div class="bar"><span style="width:68%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>3.8</span><div><div class="bar"><span style="width:76%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Platform 3.8: source-controlled checks, CI gates и PR policy хорошо ложатся на governance.</li>
+        <li>Angular 3.5: полезен для review/checks, но слабее как implementer.</li>
+        <li>Protocol 2.4: не основной autonomous coding agent.</li>
+      </ul>
+      <div class="metric"><span class="pill good">33,681 stars</span><span class="pill">PR checks</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Roo Code</b> · почему 1.8</div>
+  <h2>Functional fit уже не важен: product support gate не пройден</h2>
+  <div class="grid-2">
+    <div class="card scorecard">
+      <div class="score-row"><b>Protocol</b><span>1.4</span><div><div class="bar"><span style="width:28%"></span></div></div></div>
+      <div class="score-row"><b>Angular</b><span>3.0</span><div><div class="bar"><span style="width:60%"></span></div></div></div>
+      <div class="score-row"><b>Figma/DS</b><span>2.0</span><div><div class="bar"><span style="width:40%"></span></div></div></div>
+      <div class="score-row"><b>Platform</b><span>0.8</span><div><div class="bar"><span style="width:16%"></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>Что стоит за числами</h3>
+      <ul>
+        <li>Angular 3.0 отражает историческую близость к IDE-agent workflow.</li>
+        <li>Platform 0.8 из-за `archived: true`: нет нормального future-proofing.</li>
+        <li>Security-sensitive MCP и production rollout исключаются.</li>
+      </ul>
+      <div class="metric"><span class="pill">24,232 stars</span><span class="pill bad">Exclude</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Пилот</b> · как подтвердить или опровергнуть desk score</div>
+  <h2>Следующий шаг — заменить экспертный score измеримыми результатами на вашем репозитории</h2>
+  <table>
+    <thead><tr><th>Сценарий</th><th>Метрика</th><th>Pass condition</th></tr></thead>
+    <tbody>
+      <tr><td>Jira/GitHub issue → Angular files</td><td>Correct file discovery, dependency map</td><td>Находит component/template/service/spec/style без подсказки.</td></tr>
+      <tr><td>Implementation</td><td>Diff size, build/test/lint pass rate</td><td>Минимальный diff, public API не сломан.</td></tr>
+      <tr><td>Review</td><td>Real bug findings, false positives</td><td>Ловит RxJS leaks, forms, router, a11y, change detection.</td></tr>
+      <tr><td>Figma handoff</td><td>Design-system compliance</td><td>Использует tokens/components, не создаёт новый UI kit.</td></tr>
+      <tr><td>Recovery</td><td>Retry cost, time to fix</td><td>После падения test/build чинит или фиксирует блокер.</td></tr>
+      <tr><td>Operations</td><td>Setup time, audit, owner effort</td><td>IDE rollout ≤ 1 день; platform rollout ≤ 2-5 дней.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Решение</b> · целевая схема</div>
+  <h2>Не один победитель, а связка ролей с разными уровнями риска</h2>
+  <div class="grid-3">
+    <div class="hero">
+      <h3>Cline</h3>
+      <p class="small">Основной IDE-agent: ежедневная разработка, Figma handoff, Angular multi-file changes, тесты.</p>
+    </div>
+    <div class="hero">
+      <h3>OpenHands</h3>
+      <p class="small">Platform-agent: автономный SDLC workflow, issue → PR, sandbox, self-host/enterprise сценарии.</p>
+    </div>
+    <div class="card">
+      <h3>Вспомогательные роли</h3>
+      <ul>
+        <li>Continue: PR checks/governance.</li>
+        <li>Aider: tactical CLI fixes.</li>
+        <li>Hermes: R&D runtime.</li>
+        <li>Roo Code: exclude.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker"><b>Источники</b> · данные и ограничения</div>
+  <h2>Что использовано и где нужны дополнительные проверки</h2>
+  <ul>
+    <li>GitHub API на 2026-06-14: `cline/cline`, `OpenHands/OpenHands`, `NousResearch/hermes-agent`, `Aider-AI/aider`, `continuedev/continue`, `RooCodeInc/Roo-Code`.</li>
+    <li>Базовый отчёт: `docs/claude_alternatives_multiagent_review.md`.</li>
+    <li>Официальные docs: Cline, OpenHands, Aider, Continue, Hermes Agent.</li>
+    <li>Перед production rollout нужны: live benchmark, security review, tool allowlist, secrets policy, MCP audit, cost/latency замеры.</li>
+  </ul>
+  <div class="note" style="margin-top:1.1em">Главное ограничение: текущие оценки — аргументированный shortlist, а не финальное доказательство качества на вашем коде.</div>
+</section>
+
+</div>
+<div class="nav">
+  <button id="prev">← Назад</button>
+  <span id="counter">1 / ?</span>
+  <button id="next">Вперёд →</button>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[i].classList.remove('active');
+    i = n;
+    slides[i].classList.add('active');
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    location.hash = 's' + (i + 1);
+  }
+  document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('next').addEventListener('click', function () { show(i + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  slides[0].classList.add('active');
+  var m = location.hash.match(/^#s(\d+)$/);
+  show(m ? Math.min(slides.length - 1, Math.max(0, parseInt(m[1], 10) - 1)) : 0);
+})();
+</script>
+</body>
+</html>

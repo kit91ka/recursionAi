@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чем заменить Claude Code в мультиагентной системе Angular-команды</title>
+<style>
+  /* ============ ТОКЕНЫ ============ */
+  :root {
+    --bg: #0e1116;
+    --bg-slide: #141922;
+    --surface: #1b2230;
+    --surface-2: #222b3d;
+    --border: #2e3a52;
+    --text: #e8edf6;
+    --text-dim: #9aa7bd;
+    --accent: #4ea1ff;
+    --accent-2: #8bd0ff;
+    --accent-dim: rgba(78,161,255,.12);
+    --good: #3ecf8e;
+    --warn: #f0b429;
+    --bad: #f0566a;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
+
+  /* ============ КАРКАС ============ */
+  .deck { height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    padding: clamp(24px, 4vw, 52px) clamp(28px, 6vw, 96px) clamp(56px, 8vh, 80px);
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(78,161,255,.08), transparent 60%),
+      var(--bg-slide);
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ============ ТИПОГРАФИКА ============ */
+  .slide h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); line-height: 1.12; letter-spacing: -0.02em; margin-bottom: .5em; max-width: 22ch; }
+  .slide h2 { font-size: clamp(1.3rem, 2.4vw, 1.9rem); line-height: 1.25; letter-spacing: -0.01em; margin-bottom: .9em; max-width: 36ch; }
+  .slide h3 { font-size: 1.05rem; margin-bottom: .5em; }
+  .lead { font-size: clamp(1rem, 1.7vw, 1.25rem); color: var(--text-dim); max-width: 62ch; }
+  .small { font-size: .85rem; color: var(--text-dim); }
+  ul.bullets { list-style: none; display: grid; gap: .55em; font-size: clamp(.95rem, 1.5vw, 1.1rem); }
+  ul.bullets li { padding-left: 1.4em; position: relative; }
+  ul.bullets li::before { content: "▸"; position: absolute; left: 0; color: var(--text-dim); }
+  .kicker { text-transform: uppercase; letter-spacing: .16em; font-size: .75rem; color: var(--text-dim); margin-bottom: 1.1em; font-weight: 700; }
+  .kicker b { color: var(--accent); font-weight: 700; }
+
+  /* ============ КАРТОЧКИ ============ */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .hero {
+    background: linear-gradient(135deg, var(--accent-dim), var(--surface));
+    border: 1px solid var(--accent); border-radius: var(--radius);
+    padding: 22px 26px;
+  }
+  .hero h3 { font-size: clamp(1.3rem, 2.2vw, 1.7rem); color: var(--accent-2); margin-bottom: .35em; }
+  .hero .role { font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); font-weight: 700; margin-bottom: .8em; }
+
+  /* ============ ВЕРДИКТ-ПЛАШКА ============ */
+  .verdict {
+    border-left: 4px solid var(--bad); background: rgba(240,86,106,.08);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 16px; font-size: .95rem; color: var(--text-dim);
+  }
+  .verdict b { color: var(--bad); }
+  .note {
+    border-left: 4px solid var(--accent); background: var(--accent-dim);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 16px; font-size: .95rem; color: var(--text-dim);
+  }
+  .note b { color: var(--accent-2); }
+
+  /* ============ БЕЙДЖИ И СТАТУСЫ ============ */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: .72rem; font-weight: 600; letter-spacing: .03em; vertical-align: middle;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-dim);
+  }
+  .badge.good { color: var(--good); border-color: var(--good); }
+  .badge.warn { color: var(--warn); border-color: var(--warn); }
+  .badge.bad { color: var(--bad); border-color: var(--bad); }
+  .s-yes { color: var(--good); font-weight: 700; }
+  .s-part { color: var(--warn); }
+  .s-no { color: var(--bad); font-weight: 700; }
+  .pro, .con { padding-left: 1.5em; position: relative; }
+  .pro::before { content: "+"; position: absolute; left: .2em; color: var(--good); font-weight: 700; }
+  .con::before { content: "−"; position: absolute; left: .2em; color: var(--bad); font-weight: 700; }
+
+  /* ============ ТАБЛИЦЫ ============ */
+  table.matrix { width: 100%; border-collapse: collapse; font-size: clamp(.78rem, 1.25vw, 1rem); }
+  table.matrix th, table.matrix td { padding: .55em .7em; border-bottom: 1px solid var(--border); }
+  table.matrix th { text-align: left; color: var(--text-dim); font-weight: 600; font-size: .9em; }
+  table.matrix th:not(:first-child), table.matrix td:not(:first-child) { text-align: center; }
+  table.matrix td:first-child { color: var(--text-dim); }
+  table.matrix .hl { background: var(--accent-dim); }
+  table.matrix th.hl { color: var(--accent-2); font-weight: 700; border-bottom-color: var(--accent); }
+  table.matrix td.note-cell { font-size: .85em; color: var(--text-dim); }
+
+  /* ============ СХЕМА-ПОТОК ============ */
+  .flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
+  .flow .step {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 20px; flex: 1; min-width: 130px; text-align: center;
+  }
+  .flow .step b { display: block; margin-bottom: .3em; }
+  .flow .step .small { display: block; }
+  .flow .arr { display: flex; align-items: center; padding: 0 10px; color: var(--accent); font-size: 1.5rem; font-weight: 700; }
+
+  /* ============ РОЛИ (иерархия размеров) ============ */
+  .roles { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+  .roles .side { display: grid; gap: 14px; }
+  @media (max-width: 900px) { .roles { grid-template-columns: 1fr; } }
+
+  .stack { display: grid; gap: 14px; }
+  .spacer { flex: 1; }
+
+  /* ============ НАВИГАЦИЯ ============ */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 24px; z-index: 10;
+    background: linear-gradient(180deg, transparent, rgba(14,17,22,.92) 40%);
+    font-size: .85rem; color: var(--text-dim);
+  }
+  .nav button {
+    background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 16px; cursor: pointer; font-size: .9rem;
+  }
+  .nav button:hover { border-color: var(--accent); color: var(--accent-2); }
+  .nav .counter { font-family: var(--mono); }
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; z-index: 11;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width .25s ease;
+  }
+  .footer-tag { position: fixed; top: 14px; right: 20px; z-index: 10; font-size: .72rem; color: var(--text-dim); font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="footer-tag">claude-alternatives · 2026-06-14</div>
+<div class="deck" id="deck">
+
+<!-- 1. ТИТУЛ -->
+<section class="slide">
+  <div class="spacer"></div>
+  <div class="kicker"><b>Вопрос</b></div>
+  <h1>Чем заменить Claude Code в мультиагентной системе Angular-команды</h1>
+  <p class="lead">Сравниваем не «модель в чате», а инструментальный контур: IDE-агент, автономный агент, code review, тесты, Figma handoff, документация и поддержка продукта внутри компании.</p>
+  <div class="spacer"></div>
+  <p class="small">14 июня 2026 · критерии пилота для Angular/RxJS frontend-команды</p>
+</section>
+
+<!-- 2. ОТВЕТ СРАЗУ -->
+<section class="slide">
+  <div class="kicker"><b>Ответ</b> · всё дальнейшее — обоснование этого слайда</div>
+  <h2>Cline — основной IDE-агент. Второй финалист пилота — OpenHands или Hermes для автономного контура</h2>
+  <div class="stack">
+    <div class="hero">
+      <div class="role">Финалист №1 · основной IDE-агент</div>
+      <h3>Cline</h3>
+      <p>Закрывает ежедневные сценарии frontend-разработчика: multi-file правки, запуск тестов и build, браузер/preview, MCP, checkpoints и подтверждение действий. Подходит как первый слой замены Claude Code в IDE.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="role" style="color:var(--text-dim);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.8em">Финалист №2 · выбрать одного на пилоте</div>
+        <h3>Hermes Agent <span class="badge warn">или</span> OpenHands</h3>
+        <p class="small">Self-hosted автономный цикл для задач длиннее одного IDE-сеанса: PR review, dependency upgrades, миграции, QA-прогоны. OpenHands сильнее как поддерживаемая платформа; Hermes интересен субагентами и sandbox, но несёт больший adoption-риск.</p>
+      </div>
+      <div class="card">
+        <h3>В связке, вне пилота</h3>
+        <p class="small">Aider — точечные repo-правки через git и быстрые фиксы тестов. Continue — PR checks и copilot-сценарии. Они полезны, но не заменяют весь мультиагентный цикл.</p>
+      </div>
+    </div>
+    <div class="verdict"><b>Roo Code исключён:</b> репозиторий archived с 15.05.2026, развитие остановлено. Дальше в сравнении не участвует.</div>
+  </div>
+</section>
+
+<!-- 3. КРИТЕРИИ -->
+<section class="slide">
+  <div class="kicker"><b>Критерии</b> · что считаем обязательным</div>
+  <h2>6 must-have для замены Claude в агентном контуре, а не только в чате</h2>
+  <div class="grid-3">
+    <div class="card"><h3>1 · Tool use</h3><p class="small">Файлы, терминал, browser/preview, MCP, structured output и явные permissions.</p></div>
+    <div class="card"><h3>2 · Diff control</h3><p class="small">Правки ревьюятся до применения; есть checkpoints или git-rollback.</p></div>
+    <div class="card"><h3>3 · Angular context</h3><p class="small">Standalone components, signals, RxJS, forms, routing, Nx/monorepo, Storybook.</p></div>
+    <div class="card"><h3>4 · Figma handoff</h3><p class="small">MCP/Dev Mode данные плюс скриншот; умеет маппить дизайн-систему, а не только рисовать похожий UI.</p></div>
+    <div class="card"><h3>5 · Внедрение</h3><p class="small">Setup за часы, не недели: WebStorm/VS Code, proxy, SSO, секреты, CI, понятный runbook.</p></div>
+    <div class="card"><h3>6 · Поддержка</h3><p class="small">Активный продукт, релизы, enterprise/SLA или понятная внутренняя ownership-модель.</p></div>
+  </div>
+  <p class="lead" style="margin-top:1.2em">DeepSeek/OpenAI-compatible endpoint — базовое требование, но не критерий выбора: важнее качество tool-use, контроль действий и поддерживаемость всего workflow.</p>
+</section>
+
+<!-- 4. СЦЕНАРИИ ANGULAR-КОМАНДЫ -->
+<section class="slide">
+  <div class="kicker"><b>Сценарии</b> · чем реально пользуется frontend-команда</div>
+  <h2>Пилот должен проверять 7 рабочих сценариев, а не один Figma-to-code demo</h2>
+  <div class="grid-4">
+    <div class="card"><h3>Code review</h3><p class="small">Находит реальные Angular/RxJS баги, a11y, regressions, memory leaks, а не только стиль.</p></div>
+    <div class="card"><h3>Компоненты</h3><p class="small">Генерация standalone component + template + styles + Storybook + typed inputs/outputs.</p></div>
+    <div class="card"><h3>Тесты</h3><p class="small">Unit/component tests, harnesses, mocks, Cypress/Playwright smoke при необходимости.</p></div>
+    <div class="card"><h3>Legacy</h3><p class="small">Объясняет старые modules/services, строит карту зависимостей, предлагает безопасный refactor.</p></div>
+    <div class="card"><h3>Миграции</h3><p class="small">Angular/RxJS upgrades, signals, control flow, typed forms, dependency updates.</p></div>
+    <div class="card"><h3>Design system</h3><p class="small">Использует существующие компоненты, tokens, spacing, a11y и naming conventions.</p></div>
+    <div class="card"><h3>Docs / PR</h3><p class="small">ADR, README, migration notes, PR description, changelog, release notes.</p></div>
+    <div class="card"><h3>Figma</h3><p class="small">Figma MCP/Dev Mode + screenshot + сверка в browser preview с дизайн-системой.</p></div>
+  </div>
+</section>
+
+<!-- 5. КАРТА ПОЛЯ -->
+<section class="slide">
+  <div class="kicker"><b>Карта поля</b> · классы инструментов</div>
+  <h2>6 кандидатов — это 4 разных класса: сравнивать их «в лоб» нельзя</h2>
+  <div class="grid-2">
+    <div class="card" style="border-color:var(--accent)"><h3>IDE-агент</h3><p><b style="color:var(--accent-2)">Cline</b> — агентный цикл внутри редактора: файлы, терминал, браузер.</p><p class="small" style="margin-top:.5em">Roo Code — archived, исключён.</p></div>
+    <div class="card"><h3>Автономный self-hosted</h3><p><b>Hermes Agent, OpenHands</b> — полный цикл на своей инфраструктуре, без облака.</p></div>
+    <div class="card"><h3>CLI-агент</h3><p><b>Aider</b> — repo-first работа из терминала, правки = git-коммиты.</p></div>
+    <div class="card"><h3>IDE-copilot</h3><p><b>Continue</b> — chat / edit / autocomplete, помощник, а не агент.</p></div>
+  </div>
+  <p class="lead" style="margin-top:1.2em">Класс определяет роль: IDE-агент ускоряет разработчика, автономный агент закрывает длинные задачи, PR checks ловят регрессии, CLI-агент удобен для точечных правок.</p>
+</section>
+
+<!-- 6. БАЗА НЕ РАЗЛИЧАЕТ -->
+<section class="slide">
+  <div class="kicker"><b>База</b> · что не различает кандидатов</div>
+  <h2>Базовые требования кандидатов не различают: все open-source, все работают с DeepSeek</h2>
+  <ul class="bullets" style="margin-bottom:1.2em">
+    <li>Лицензии пермиссивные у всех: MIT или Apache-2.0 (у OpenHands enterprise-каталог — отдельно).</li>
+    <li>DeepSeek подключается к каждому: напрямую, через OpenAI-compatible endpoint или OpenRouter.</li>
+    <li>Запуск build/lint/test умеют все агенты (у Continue — не основной сценарий).</li>
+  </ul>
+  <div class="note"><b>Почему DeepSeek — не дифференциатор:</b> DeepSeek даёт OpenAI-compatible API, поэтому любой инструмент с поддержкой такого endpoint работает с ним «из коробки». Сравнивать по этому признаку бессмысленно.</div>
+  <p class="small" style="margin-top:1em">Единственный нюанс приватности: IDE-расширения держат код локально, но модель — облачная. Полный self-hosted дают только Hermes и OpenHands.</p>
+</section>
+
+<!-- 7. ДИФФЕРЕНЦИРУЮЩАЯ ТАБЛИЦА -->
+<section class="slide">
+  <div class="kicker"><b>Различия</b> · что влияет на выбор</div>
+  <h2>Кандидатов различают не фичи модели, а готовность к командному workflow</h2>
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Свойство</th>
+        <th class="hl">Cline</th>
+        <th>Hermes</th>
+        <th>OpenHands</th>
+        <th>Aider</th>
+        <th>Continue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Angular multi-file edit</td>
+        <td class="hl s-yes">да</td>
+        <td class="s-yes">да</td>
+        <td class="s-yes">да</td>
+        <td class="s-yes">да</td>
+        <td class="s-part">зависит от модели</td>
+      </tr>
+      <tr>
+        <td>Figma path (MCP / Dev Mode / screenshot)</td>
+        <td class="hl s-yes">через MCP</td>
+        <td class="s-yes">через MCP</td>
+        <td class="s-yes">через MCP</td>
+        <td class="s-no">нет MCP</td>
+        <td class="s-yes">через MCP</td>
+      </tr>
+      <tr>
+        <td>Контроль diff до применения</td>
+        <td class="hl s-yes">каждое действие</td>
+        <td class="s-yes">да</td>
+        <td class="s-part">в логе, слабее</td>
+        <td class="s-yes">через git</td>
+        <td class="s-yes">да</td>
+      </tr>
+      <tr>
+        <td>Browser / preview для UI-сверки</td>
+        <td class="hl s-yes">да</td>
+        <td class="s-yes">да</td>
+        <td class="s-yes">да</td>
+        <td class="s-no">нет</td>
+        <td class="s-no">нет</td>
+      </tr>
+      <tr>
+        <td>Checkpoints / rollback</td>
+        <td class="hl s-yes">встроенные</td>
+        <td class="s-yes">встроенные</td>
+        <td class="s-part">через сессии</td>
+        <td class="s-part">через git</td>
+        <td class="s-no">нет</td>
+      </tr>
+      <tr>
+        <td>Скорость внедрения</td>
+        <td class="hl s-yes">быстро</td>
+        <td class="s-part">медленно</td>
+        <td class="s-part">средне</td>
+        <td class="s-yes">быстро</td>
+        <td class="s-yes">быстро</td>
+      </tr>
+      <tr>
+        <td>Долгосрочная поддержка</td>
+        <td class="hl s-yes">активный продукт + enterprise</td>
+        <td class="s-part">молодой продукт</td>
+        <td class="s-yes">активная платформа + enterprise</td>
+        <td class="s-yes">зрелый CLI</td>
+        <td class="s-yes">акцент на PR checks</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="small" style="margin-top:1em">Вывод: Cline быстрее всего внедрить как рабочий инструмент разработчика; OpenHands/Hermes проверять отдельно как платформу для автономных workflow.</p>
+</section>
+
+<!-- 8. ПРАВДА ПРО FIGMA -->
+<section class="slide">
+  <div class="kicker"><b>Figma</b> · дизайн-система важнее «похожего скриншота»</div>
+  <h2>Правильный Figma-сценарий: дизайн-данные + screenshot + проверка в browser preview</h2>
+  <div class="flow" style="margin:1.4em 0">
+    <div class="step"><b>Figma</b><span class="small">макет</span></div>
+    <div class="arr">→</div>
+    <div class="step"><b>MCP / Dev Mode</b><span class="small">tokens, layers, размеры, цвета, текст, metadata</span></div>
+    <div class="arr">→</div>
+    <div class="step"><b>Vision + rules</b><span class="small">скриншот + правила дизайн-системы</span></div>
+    <div class="arr">→</div>
+    <div class="step" style="border-color:var(--accent)"><b style="color:var(--accent-2)">Angular</b><span class="small">component/template/styles/tests</span></div>
+  </div>
+  <ul class="bullets">
+    <li>В пилоте надо проверять не pixel-perfect demo, а использование ваших Angular-компонентов, tokens, spacing, breakpoint rules и accessibility.</li>
+    <li>Скриншот нужен как визуальный oracle; MCP/Dev Mode данные нужны, чтобы агент не угадывал размеры, цвета и структуру.</li>
+    <li><span class="s-no">Главный риск:</span> агент создаёт новый UI вместо повторного использования дизайн-системы. Это должно быть fail-критерием.</li>
+  </ul>
+</section>
+
+<!-- 9. РОЛИ В КОМАНДЕ -->
+<section class="slide">
+  <div class="kicker"><b>Решение</b> · связка инструментов</div>
+  <h2>Связка ролей лучше одной «универсальной» замены Claude</h2>
+  <div class="roles">
+    <div class="hero">
+      <div class="role">Главная роль · IDE agent для Angular-разработчика</div>
+      <h3>Cline</h3>
+      <p>Компоненты, тесты, миграции, объяснение legacy, Figma handoff и локальная проверка build/lint/test. Низкий adoption-риск: ставится в IDE, работает рядом с текущим workflow и не требует сразу строить платформу.</p>
+    </div>
+    <div class="side">
+      <div class="card"><h3>Continue <span class="badge">PR checks</span></h3><p class="small">Автоматические проверки PR: a11y, Angular conventions, security, тестовые пробелы, документация.</p></div>
+      <div class="card"><h3>Aider <span class="badge">CLI</span></h3><p class="small">Быстрые repo-правки, scripted refactor, исправление lint/test после ревью.</p></div>
+      <div class="card"><h3>OpenHands / Hermes <span class="badge warn">platform pilot</span></h3><p class="small">Автономные задачи: dependency upgrades, массовые миграции, QA-прогоны, подготовка PR.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. ПОДДЕРЖКА И OWNERSHIP -->
+<section class="slide">
+  <div class="kicker"><b>Поддержка</b> · продукт и внутренняя команда</div>
+  <h2>Долгосрочный риск — не модель, а кто будет поддерживать агентный контур через 6–12 месяцев</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Product health</h3>
+      <ul class="bullets">
+        <li>Активные релизы, issue velocity, roadmap, security policy, enterprise/support option.</li>
+        <li>Понятный migration path при смене модели: DeepSeek, OpenRouter, локальные модели, корпоративный gateway.</li>
+        <li>Отсутствие archived/stale статуса — hard stop для основного инструмента команды.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Internal ownership</h3>
+      <ul class="bullets">
+        <li>Назначить владельца: конфиги, MCP servers, prompts/rules, секреты, access control, обновления.</li>
+        <li>Runbook: установка, rollback, отключение tools, обработка incident, логирование действий агента.</li>
+        <li>Метрики: time-to-PR, pass rate build/test/lint, human interventions, cost per merged PR.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead" style="margin-top:1.2em">Рекомендация: Cline можно пилотировать быстро в IDE; OpenHands/Hermes требуют отдельного platform owner и security review до масштабирования.</p>
+</section>
+
+<!-- 11. ПИЛОТ -->
+<section class="slide">
+  <div class="kicker"><b>План</b> · следующий шаг</div>
+  <h2>Мини-пилот: 2–3 инструмента, 7 задач, измеряем готовность workflow</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>7 задач — единый набор для кандидатов</h3>
+      <ul class="bullets">
+        <li>Figma frame → Angular component с design-system компонентами.</li>
+        <li>Code review реального PR: bugs, a11y, RxJS leaks, tests.</li>
+        <li>Генерация unit/component tests для существующего компонента.</li>
+        <li>Объяснение legacy feature и карта зависимостей.</li>
+        <li>Миграция Angular/RxJS pattern на новый подход.</li>
+        <li>PR description + docs/migration note.</li>
+        <li>Recovery после намеренно сломанного build/test/lint.</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--accent)">
+      <h3 style="color:var(--accent-2)">Критерии успеха</h3>
+      <ul class="bullets">
+        <li>Setup воспроизводится: IDE за день, platform за 2–5 дней.</li>
+        <li>Все изменения проходят build/test/lint или агент корректно объясняет блокер.</li>
+        <li>Diff минимальный и ревьюится до применения.</li>
+        <li>Figma-задача использует дизайн-систему, а не создаёт параллельный UI kit.</li>
+        <li>Есть owner, runbook, upgrade policy и fallback при деградации продукта.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small" style="margin-top:1.2em">Участники: Cline как IDE-финалист; OpenHands или Hermes как platform-финалист; Continue/Aider можно проверять как вспомогательные роли. Скоринг 0–5 по каждому сценарию.</p>
+</section>
+
+<!-- A1. APPENDIX -->
+<section class="slide">
+  <div class="kicker">Приложение · для исполнителя пилота</div>
+  <h2>Runbook: подключение DeepSeek и фиксация результата</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Порядок подключения</h3>
+      <ol style="padding-left:1.4em;display:grid;gap:.45em;font-size:.95rem">
+        <li>Зафиксировать источник: DeepSeek API / OpenRouter / Together / локальный.</li>
+        <li>Developer API key — подписка chat/app не подходит.</li>
+        <li>Base URL <span style="font-family:var(--mono)">api.deepseek.com</span>, model id <span style="font-family:var(--mono)">deepseek-chat</span> / <span style="font-family:var(--mono)">deepseek-reasoner</span>.</li>
+        <li>Smoke test вне инструмента: «return only OK» → в лог.</li>
+        <li>Одна мелкая правка в одном файле.</li>
+        <li>Только после этого — Figma-сценарий.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Типовые причины ошибок</h3>
+      <ul class="bullets" style="font-size:.95rem">
+        <li>Подписка вместо API key · неверный model id · не тот base URL</li>
+        <li>Key не в той переменной окружения · network/proxy/firewall</li>
+        <li>Нужен routing через OpenRouter/LiteLLM</li>
+        <li>Модель умеет chat, но не tool use в нужном формате</li>
+      </ul>
+      <h3 style="margin-top:1em">Скоринг пилота (заполнить)</h3>
+      <table class="matrix" style="font-size:.8rem">
+        <thead><tr><th>Инструмент</th><th>Setup</th><th>Angular</th><th>Figma</th><th>Review</th><th>Support</th><th>Итог</th></tr></thead>
+        <tbody>
+          <tr><td>Cline</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td></tr>
+          <tr><td>2-й финалист</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td><td>·</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="small" style="margin-top:1em">Источники: docs.cline.bot · docs.openhands.dev · docs.continue.dev · aider.chat/docs · hermes-agent.nousresearch.com · Figma Dev Mode MCP announcements · api-docs.deepseek.com</p>
+</section>
+
+</div>
+<div class="nav">
+  <button id="prev">← Назад</button>
+  <span class="counter" id="counter">1 / ?</span>
+  <button id="next">Вперёд →</button>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[i].classList.remove('active');
+    i = n;
+    slides[i].classList.add('active');
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + slides.length;
+    document.getElementById('progress').style.width = ((i + 1) / slides.length * 100) + '%';
+    location.hash = 's' + (i + 1);
+  }
+  document.getElementById('prev').addEventListener('click', function () { show(i - 1); });
+  document.getElementById('next').addEventListener('click', function () { show(i + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  var m = location.hash.match(/^#s(\d+)$/);
+  slides[0].classList.add('active');
+  show(m ? Math.min(slides.length - 1, Math.max(0, parseInt(m[1], 10) - 1)) : 0);
+})();
+</script>
+</body>
+</html>

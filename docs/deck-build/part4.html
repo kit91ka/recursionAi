@@ -1,0 +1,133 @@
+<section class="slide">
+  <div class="kicker">ПРЕДВАРИТЕЛЬНЫЙ ВЫВОД</div>
+  <h2>Рекомендация (до пилота)</h2>
+  <div class="grid-2">
+    <div class="card accent">
+      <h3>Cline <span class="badge info">основной IDE-агент</span></h3>
+      <ul class="bullets">
+        <li>Figma-to-prototype: vision + diff-контроль + MCP</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Aider <span class="badge info">CLI</span></h3>
+      <ul class="bullets">
+        <li>Точечные repo-правки, починка build/test, git-workflow</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Continue <span class="badge info">copilot</span></h3>
+      <ul class="bullets">
+        <li>Ежедневный autocomplete с DeepSeek</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Hermes ИЛИ OpenHands <span class="badge warn">один кандидат</span></h3>
+      <ul class="bullets">
+        <li>Self-hosted автономный цикл: Hermes — если важны контроль окружения и rollback, OpenHands — если нужен зрелый OSS с комьюнити</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small">Roo Code — исключить (archived). Финалисты мини-пилота: Cline + один из {Hermes, OpenHands}.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">ПЛАН ПРОВЕРКИ</div>
+  <h2>Мини-пилот финалистов</h2>
+  <p class="lead">Только 2 инструмента, эмпирический скоринг 0–5.</p>
+  <p class="small">0 нет · 1 нестабильно · 2 friction · 3 пригодно · 4 хорошо · 5 основной workflow</p>
+  <ul class="bullets">
+    <li>A — экран из Figma-скриншота → React/TS, responsive, build</li>
+    <li>D — исправление намеренной TS/CSS-ошибки (recovery)</li>
+    <li>E — переключение DeepSeek ↔ альтернатива через OpenAI-compatible/OpenRouter</li>
+  </ul>
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Инструмент</th>
+        <th>DeepSeek</th>
+        <th>Figma/vision</th>
+        <th>Multi-file</th>
+        <th>Visual</th>
+        <th>Diff</th>
+        <th>Recovery</th>
+        <th>Итог</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cline</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+      </tr>
+      <tr>
+        <td>&lt;2-й финалист&gt;</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+        <td>TBD</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="slide">
+  <div class="kicker">ЭТАП ПИЛОТА</div>
+  <h2>Проверка подключения DeepSeek</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Порядок проверки</h3>
+      <ol>
+        <li>Зафиксировать источник API</li>
+        <li>Developer API key ≠ подписка chat/app</li>
+        <li>Base URL https://api.deepseek.com, model id deepseek-chat / deepseek-reasoner</li>
+        <li>Smoke test «return only OK»</li>
+        <li>Одна мелкая правка</li>
+        <li>Только потом — Figma-сценарий</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Типовые причины ошибок</h3>
+      <ul class="bullets">
+        <li>Подписка вместо API key</li>
+        <li>Неверный model id</li>
+        <li>Не тот base URL</li>
+        <li>Key не в той переменной</li>
+        <li>Нужен OpenRouter/LiteLLM</li>
+        <li>Network/proxy</li>
+        <li>Модель без tool use</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">ИТОГИ</div>
+  <h2>Критерии успеха и источники</h2>
+  <div class="grid-2">
+    <div class="card accent">
+      <h3>Критерий успеха</h3>
+      <ul class="bullets">
+        <li>DeepSeek подключается без обходов</li>
+        <li>Setup воспроизводится за 15–30 минут</li>
+        <li>Экран собирается за приемлемое время</li>
+        <li>Изменения проходят build</li>
+        <li>Diff ревьюится без ощущения переписанного проекта</li>
+        <li>Продолжение с последней успешной точки после ошибки</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Источники</h3>
+      <p class="small">
+        aider.chat/docs · docs.cline.bot · docs.continue.dev · docs.openhands.dev · github.com/RooCodeInc/Roo-Code (ARCHIVED) · hermes-agent.nousresearch.com · api-docs.deepseek.com
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,104 @@
+<section class="slide">
+  <div class="kicker">СРАВНЕНИЕ ИНСТРУМЕНТОВ</div>
+  <h2>За / против: автономные self-hosted</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Hermes Agent <span class="badge warn">риск: высокий</span></h3>
+      <ul class="bullets">
+        <li class="pro">Полный агентный цикл: терминал, файлы, браузер, vision, память, субагенты</li>
+        <li class="pro">MCP и checkpoints/rollback — сильно для recovery после ошибок</li>
+        <li class="pro">Полный self-hosted и нулевая телеметрия — максимум контроля</li>
+        <li class="con">Серверный setup, безопасность, зрелость UX — тяжелее IDE-расширений</li>
+        <li class="con">Нужно подтвердить аутентичность источника (.ru-зеркало vs официальный Nous)</li>
+        <li class="con">Для daily IDE-работы избыточен</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>OpenHands <span class="badge warn">риск: средний</span></h3>
+      <ul class="bullets">
+        <li class="pro">Настоящий «developer agent»: план, правки, команды, браузер, vision, MCP</li>
+        <li class="pro">Self-hosted, ядро под MIT</li>
+        <li class="pro">Хорош для сложных автономных задач, зрелое OSS-комьюнити</li>
+        <li class="con">Самый большой setup overhead (Docker/sandbox), безопасность, стоимость</li>
+        <li class="con">Для ежедневного frontend-прототипа избыточен; контроль правок слабее Cline</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">СРАВНЕНИЕ ИНСТРУМЕНТОВ</div>
+  <h2>За / против: IDE-агенты</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Cline <span class="badge good">активен</span></h3>
+      <ul class="bullets">
+        <li class="pro">Полный end-to-end цикл в IDE: файлы, терминал, браузер, vision</li>
+        <li class="pro">Каждое действие требует подтверждения — хороший контроль diff</li>
+        <li class="pro">MCP + checkpoints; работает во многих редакторах и как CLI</li>
+        <li class="con">При автономной работе дороже по токенам</li>
+        <li class="con">Без дисциплины в промптах может делать широкий рефактор</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Roo Code <span class="badge bad">ARCHIVED — не рекомендуется</span></h3>
+      <ul class="bullets">
+        <li class="pro">Богатый набор: режимы, per-mode модели, MCP, checkpoints, browser</li>
+        <li class="con">Репозиторий archived с 2026-05-15: развитие остановлено, поддержки нет — в пилот не брать</li>
+        <li class="con">Рассматривать только как форк или исторический референс</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">СРАВНЕНИЕ ИНСТРУМЕНТОВ</div>
+  <h2>За / против: CLI и copilot</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Aider <span class="badge good">активен</span></h3>
+      <ul class="bullets">
+        <li class="pro">Самый аккуратный repo-first workflow: правки = git-коммиты, лёгкий ревью и откат</li>
+        <li class="pro">Прямая поддержка DeepSeek, vision, авто-fix lint/test, repo map</li>
+        <li class="pro">Минимум «магии», предсказуемые точечные правки</li>
+        <li class="con">CLI-first: дизайнеру и PM менее удобно</li>
+        <li class="con">Нет MCP — Figma только через ручной экспорт/скриншот; нет browser-preview</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Continue <span class="badge good">активен</span></h3>
+      <ul class="bullets">
+        <li class="pro">Лучший повседневный помощник: chat/edit/autocomplete, роли моделей</li>
+        <li class="pro">Гибкая конфигурация провайдеров — удобно посадить DeepSeek как daily-модель</li>
+        <li class="pro">VS Code + JetBrains</li>
+        <li class="con">Не полноценный автономный агент для крупных Figma-to-prototype задач</li>
+        <li class="con">Vision и agent-команды зависят от модели/режима, не основной сценарий</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">КРИТЕРИИ ВЫБОРА</div>
+  <h2>Приоритизация критериев под кейс</h2>
+  <div class="grid-2">
+    <div class="card accent">
+      <h3>Must-have <span class="badge info">без этого инструмент отпадает</span></h3>
+      <ul class="bullets">
+        <li>Подключение DeepSeek (OpenAI-compatible достаточно)</li>
+        <li>Контроль diff перед применением</li>
+        <li>Vision: скриншот макета → код — основной путь из Figma</li>
+        <li>Recovery после ошибки (checkpoints / git / сессии)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Nice-to-have <span class="badge info">усиливает, но не решает</span></h3>
+      <ul class="bullets">
+        <li>MCP (для Figma-сервера и расширений)</li>
+        <li>Browser/preview для визуальной проверки</li>
+        <li>Субагенты, JetBrains, messaging-интеграции</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead">По must-have проходят все, кроме Roo Code (archived). Дальше выбор — по классу под роль в команде.</p>
+</section>

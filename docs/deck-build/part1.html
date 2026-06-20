@@ -1,0 +1,64 @@
+<section class="slide">
+  <h1>Альтернативы Claude Code для frontend-прототипирования</h1>
+  <p class="lead">Цель — выбрать 1-2 финалиста для мини-пилота. Desk-сравнение по официальным докам и GitHub, без установки всех инструментов подряд.</p>
+  <p class="small">11 июня 2026</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">Метод</div>
+  <h2>Что изменили относительно первой версии плана</h2>
+  <ul class="bullets">
+    <li>Вместо трёхдневного hands-on пилота с установкой всех 6 инструментов — сначала бумажная сетка свойств, руками проверяются только 1-2 финалиста.</li>
+    <li>Шкала 0-5 «работает/не работает» (требует установки) заменена легендой наличия фичи по докам: + есть / ~ частично или обходной путь / − нет / ? не подтверждено.</li>
+    <li>Инструменты сгруппированы по классам, а не свалены в одну общую шкалу.</li>
+    <li>Добавлены оси: лицензия, self-hosted, активность (последний коммит, archived), зрелость/риск.</li>
+    <li>Про Figma честно: нативной интеграции нет почти ни у кого; реальная ось — vision (скриншот → код) плюс наличие MCP-сервера Figma.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <div class="kicker">Проверка фактов</div>
+  <h2>Важные находки при проверке</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Roo Code закрыт <span class="badge bad">ARCHIVED</span></h3>
+      <p>Репозиторий RooCodeInc/Roo-Code в состоянии archived, последний пуш 2026-05-15. Развитие остановлено — в пилот брать не рекомендуется.</p>
+    </div>
+    <div class="card">
+      <h3>Hermes: источник под вопросом <span class="badge warn">проверить</span></h3>
+      <p>Официальный сайт — hermes-agent.nousresearch.com; домен hermes-agent.ru похож на зеркало/локализацию. Перед использованием подтвердить аутентичность источника.</p>
+    </div>
+    <div class="card">
+      <h3>Звёзды GitHub недостоверны <span class="badge info">метод</span></h3>
+      <p>Точные счётчики звёзд в окружении проверки оказались недостоверными — активность оцениваем по дате последнего коммита и флагу archived.</p>
+    </div>
+    <div class="card">
+      <h3>DeepSeek — не дифференциатор <span class="badge info">факт</span></h3>
+      <p>DeepSeek предоставляет OpenAI-compatible API, поэтому любой инструмент с поддержкой OpenAI-compatible endpoint умеет с ним работать. Это общий факт, а не преимущество отдельного инструмента.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Контекст сравнения</div>
+  <h2>Классы инструментов</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>CLI-агент</h3>
+      <p>Aider — repo-first работа из терминала.</p>
+    </div>
+    <div class="card">
+      <h3>IDE-агент</h3>
+      <p>Cline; Roo Code <span class="badge bad">archived</span> — оставлен в таблице для полноты.</p>
+    </div>
+    <div class="card">
+      <h3>IDE-copilot</h3>
+      <p>Continue — chat, edit и autocomplete в редакторе.</p>
+    </div>
+    <div class="card">
+      <h3>Автономный self-hosted агент</h3>
+      <p>Hermes Agent, OpenHands — полный агентный цикл на своей инфраструктуре.</p>
+    </div>
+  </div>
+  <p class="small">Сравнивать copilot (Continue) и автономного агента (OpenHands) «в лоб» по одному баллу нечестно — у них разные задачи. Таблицу читаем с учётом класса.</p>
+</section>
