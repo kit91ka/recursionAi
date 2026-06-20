@@ -21,6 +21,17 @@ export const ZidiumPreset = definePreset(Aura, {
       900: '#002646',
       950: '#00192d',
     },
+    formField: {
+      borderRadius: '8px',
+      paddingX: '1rem',
+      paddingY: '0.5rem',
+      focusRing: {
+        width: '2px',
+        style: 'solid',
+        color: '{primary.500}',
+        offset: '-1px',
+      },
+    },
     colorScheme: {
       light: {
         primary: {
@@ -30,7 +41,13 @@ export const ZidiumPreset = definePreset(Aura, {
           activeColor: '{primary.700}',
         },
         formField: {
-          borderRadius: '8px',
+          background: '{surface.0}',
+          borderColor: '#dee2e6',
+          hoverBorderColor: '{primary.500}',
+          focusBorderColor: '{primary.500}',
+          placeholderColor: '#dee2e6',
+          color: '#263238',
+          iconColor: '#75787f',
         },
         content: {
           borderRadius: '10px',
@@ -42,8 +59,8 @@ export const ZidiumPreset = definePreset(Aura, {
         },
         datatable: {
           headerBackground: '#f9fafc',
-          headerCellPadding: '0.75rem 1rem',
-          bodyCellPadding: '0.75rem 1rem',
+          headerCellPadding: '0.625rem 1rem',
+          bodyCellPadding: '0.625rem 1rem',
           borderColor: '#dee2e6',
           rowStripedBackground: '#f9fafc',
         },

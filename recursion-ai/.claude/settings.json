@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"../.claude/hooks/session-start.js\"",
+            "statusMessage": "Loading AGENT_CONTEXT.md"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"../.claude/hooks/stop-reminder.js\"",
+            "statusMessage": "Checking session log"
+          }
+        ]
+      }
+    ]
+  }
+}

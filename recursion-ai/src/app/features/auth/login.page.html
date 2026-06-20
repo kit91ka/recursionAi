@@ -26,24 +26,27 @@
             formControlName="password"
             autocomplete="current-password"
             [feedback]="false"
-            [class.ng-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+            [class.ng-invalid]="form.get('password')?.invalid && (form.get('password')?.touched || form.get('password')?.hasError('serverError'))"
           />
-          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-            <small class="p-error">Field is required</small>
+          @if (form.get('password')?.invalid && (form.get('password')?.touched || form.get('password')?.hasError('serverError'))) {
+            @if (form.get('password')?.hasError('required')) {
+              <small class="p-error">Field is required</small>
+            }
+            @if (form.get('password')?.hasError('serverError')) {
+              <small class="p-error">{{ form.get('password')?.getError('serverError') }}</small>
+            }
           }
         </div>
       </p-fluid>
 
-      @if (serverError()) {
-        <small class="p-error server-error">{{ serverError() }}</small>
-      }
-      <p-button
-        type="submit"
-        label="Logon"
-        [loading]="loading"
-        [disabled]="form.invalid || loading"
-        [style]="{ width: '100%' }"
-      />
+      <div class="button-wrapper">
+        <p-button
+          type="submit"
+          label="Logon"
+          [loading]="loading()"
+          [disabled]="form.invalid || loading()"
+        />
+      </div>
     </p-card>
   </form>
 </div>

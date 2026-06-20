@@ -1,0 +1,26 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_KEY"
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Read(//C/Users/kit91/WebstormProjects/recursionAi/**)",
+      "Edit(//C/Users/kit91/WebstormProjects/recursionAi/**)",
+      "Write(//C/Users/kit91/WebstormProjects/recursionAi/**)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(ng:*)",
+      "Bash(git:*)",
+      "Bash(openapi-generator-cli:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": [
+      "Read(//C/Users/kit91/WebstormProjects/recursionAi/.env)",
+      "Read(//C/Users/kit91/WebstormProjects/recursionAi/.env.*)"
+    ]
+  }
+}

@@ -1,13 +1,14 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FluidModule } from 'primeng/fluid';
 
 import { ZidiumWebServiceFrontCategoryDto } from '../../core/api/model/zidiumWebServiceFrontCategoryDto.model';
+import { CategoriesStore } from './categories.store';
 import { nameExistsValidator } from '../../shared/validators/name-exists.validator';
 
 @Component({
@@ -16,7 +17,6 @@ import { nameExistsValidator } from '../../shared/validators/name-exists.validat
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    DialogModule,
     ButtonModule,
     InputTextModule,
     FluidModule,
@@ -26,10 +26,11 @@ import { nameExistsValidator } from '../../shared/validators/name-exists.validat
 })
 export class CategoryEditDialog {
   private readonly ref = inject(DynamicDialogRef);
+  private readonly location = inject(Location);
   readonly config = inject(DynamicDialogConfig);
-  readonly saved = signal(false);
 
   readonly item: ZidiumWebServiceFrontCategoryDto | null = this.config.data?.item ?? null;
+  readonly store: CategoriesStore = this.config.data?.store;
   readonly canEdit = this.item?.canEdit ?? true;
   readonly isAdd = !this.item;
   readonly id = this.item?.id ?? null;
@@ -42,20 +43,16 @@ export class CategoryEditDialog {
     }),
   });
 
-  constructor() {
-    effect(() => {
-      if (this.saved()) {
-        this.ref.close({ name: this.form.getRawValue().name });
-      }
-    });
-  }
-
   save(): void {
-    if (this.form.invalid) return;
-    this.saved.set(true);
+    if (this.form.invalid || this.form.pending) return;
+    const name = this.form.getRawValue().name;
+    this.ref.close();
+    this.store.save(name, this.id ?? undefined).subscribe();
+    this.location.replaceState('/categories');
   }
 
   close(): void {
     this.ref.close();
+    this.location.replaceState('/categories');
   }
 }

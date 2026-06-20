@@ -17,8 +17,22 @@
 - **Этап 8**: Тесты — 45 unit-тестов (store, dialog, validator, page, shell, login, app). Все проходят.
 
 ### Что осталось
-- **Этап 9**: E2E тесты, настройка скриптов.
 - Warning о превышении initial bundle budget (632 kB при лимите 500 kB) — предсуществующая проблема.
+
+### Исправлено 2026-06-20 (сессия 1)
+- **app.config.ts**: добавлен `provideApi('')` — без него все API-запросы шли на `http://localhost`
+- **Add/Edit модалка**: убран двойной `<p-dialog>` (DynamicDialog уже даёт обёртку), кнопки вынесены из `ng-template pTemplate="footer"` (не проецируется в DynamicDialog), диалог сам вызывает store.save() (т.к. `ref.close()` не эмитит `onClose`)
+- **Удаление**: добавлен `<p-confirmDialog>` (без него ConfirmationService.confirm() ничего не показывает), оптимистичное удаление с восстановлением при ошибке API
+- **E2E**: `e2e/categories-crud.spec.ts` — полный CRUD-поток (логин → add → delete), проходит
+
+### Исправлено 2026-06-20 (сессия 2 — Figma table + nav)
+- **Таблица categories**: `table-layout: fixed`, Id/Name поровну (517px), Actions 48px, padding ячеек 10px 16px, убран `p-datatable-sm`
+- **Add кнопка**: текстовая без фона/рамки (transparent, no border), иконка 16px, gap 8px, hover `#f4f4f5`
+- **Delete кнопка**: строго 48px, padding 0, иконка 16px по центру
+- **Nav sidebar**: PrimeNG-иконки заменены на SVG из Figma (`currentColor`, 20×20):
+  sitemap (иерархия) → toggle (древовидная) → settings (шестерёнка, active)
+- **Sidebar цвета**: default `#677379`, active `#ffffff` на `#005baa`
+- `headerCellPadding` в `theme.ts`: `0.75rem` → `0.625rem` (10px)
 
 ## Как запускать
 - `npm start` — dev-сервер с `proxy.conf.json` (проксирует `/front` → бэкенд, без CORS).

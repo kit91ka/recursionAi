@@ -71,15 +71,26 @@ export class CategoriesStore {
         this.loadPage().subscribe();
       }),
       map(() => undefined),
+      catchError((err) => {
+        this.error.set(err.error?.detail ?? 'Failed to save category');
+        return of(undefined);
+      }),
     );
   }
 
-  remove(id: number): Observable<void> {
-    this.removeFromList(id);
-    return this.api._delete(id).pipe(
+  remove(item: ZidiumWebServiceFrontCategoryDto): Observable<void> {
+    this.removeFromList(item.id);
+    return this.api._delete(item.id).pipe(
+      tap(() => {
+        if (this.items().length === 0 && this.pageNumber > 0) {
+          this.reset();
+          this.loadPage().subscribe();
+        }
+      }),
       map(() => undefined),
       catchError((err) => {
         this.error.set(err.error?.detail ?? 'Failed to delete category');
+        this.items.update((prev) => [item, ...prev]);
         return of(undefined);
       }),
     );

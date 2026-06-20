@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { CategoriesStore } from './categories.store';
@@ -95,6 +95,10 @@ export class CategoriesPage implements OnInit {
     });
   }
 
+  openAddDialog(): void {
+    this.openDialog(null);
+  }
+
   ngOnInit(): void {
     this.store.loadPage().subscribe();
   }
@@ -129,27 +133,18 @@ export class CategoriesPage implements OnInit {
 
     if (!dialogRef) return;
 
-    dialogRef.onClose
-      .pipe(
-        filter((result) => !!result),
-        switchMap((result) => {
-          const name = result?.name as string;
-          if (!name) return [];
-          return this.store.save(name, id ?? undefined);
-        }),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.router.navigate(['/categories']));
+    // Диалог сам управляет сохранением и очисткой URL.
+    // onClose не используется — DynamicDialogRef.close() не эмитит onClose в этой версии PrimeNG.
   }
 
   confirmDelete(item: ZidiumWebServiceFrontCategoryDto): void {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete "${item.name}"?`,
-      header: 'Delete Category',
+      message: 'Sure to delete this element?',
+      header: 'Confirmation',
       acceptButtonProps: { severity: 'danger', label: 'Delete' },
-      rejectButtonProps: { label: 'Cancel', severity: 'secondary' },
+      rejectButtonProps: { label: 'Close', severity: 'secondary' },
       accept: () => {
-        this.store.remove(item.id).subscribe();
+        this.store.remove(item).subscribe();
       },
     });
   }

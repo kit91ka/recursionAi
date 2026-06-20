@@ -1,34 +1,64 @@
 .categories-page {
   max-width: 1200px;
+  padding: 32px;
+}
+
+.categories-card {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .categories-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 
   h1 {
     margin: 0;
+    font-family: Roboto, sans-serif;
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 500;
     color: #263238;
   }
 }
 
-.add-link {
-  color: #005baa;
-  text-decoration: none;
-  font-weight: 500;
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: Roboto, sans-serif;
   font-size: 14px;
+  font-weight: 500;
+  color: #263238;
+  cursor: pointer;
+  line-height: 1;
+  outline: none;
+
+  i {
+    font-size: 16px;
+    color: #677379;
+  }
 
   &:hover {
-    text-decoration: underline;
+    background: #f4f4f5;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px #005baa;
   }
 }
 
 .search-bar {
-  margin-bottom: 1rem;
+  width: 100%;
 }
 
 .search-input {
@@ -41,7 +71,71 @@
   color: #a9120a;
   border: 1px solid #fecaca;
   border-radius: 8px;
-  margin-bottom: 1rem;
+}
+
+.categories-table {
+  // Fixed layout — колонки уважают заданные ширины
+  ::ng-deep .p-datatable-table {
+    border: 1px solid #dee2e6;
+    border-radius: 0;
+    table-layout: fixed;
+  }
+
+  ::ng-deep .p-datatable-thead > tr > th {
+    background: #f9fafc;
+    padding: 10px 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #263238;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  ::ng-deep .p-datatable-tbody > tr > td {
+    padding: 10px 16px;
+    font-family: Roboto, sans-serif;
+    font-size: 14px;
+    color: #263238;
+    border-bottom: 1px solid #dee2e6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none;
+  }
+
+  // Id колонка — равная с Name, чуть более светлый цвет
+  ::ng-deep .p-datatable-thead > tr > th:first-child,
+  ::ng-deep .p-datatable-tbody > tr > td:first-child {
+    color: #677379;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Actions колонка — 48px как в Figma
+  ::ng-deep .p-datatable-thead > tr > th:last-child,
+  ::ng-deep .p-datatable-tbody > tr > td:last-child {
+    width: 48px;
+    text-align: center;
+    padding: 0;
+  }
+
+  // Центрируем delete-кнопку внутри ячейки
+  ::ng-deep .p-datatable-tbody > tr > td:last-child .p-button {
+    width: 48px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+  }
+
+  ::ng-deep .p-datatable-tbody > tr > td:last-child .p-button .p-button-icon {
+    font-size: 16px;
+    color: #677379;
+  }
 }
 
 .sortable {
@@ -51,13 +145,13 @@
 .empty-message {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
+  color: #677379;
 }
 
 .loading-more {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .scroll-sentinel {

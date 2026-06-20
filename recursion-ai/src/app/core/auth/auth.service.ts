@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { HttpContext } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { LogonService } from '../api/api/logon.service';
@@ -12,8 +13,8 @@ export class AuthService {
 
   readonly isAuthenticated = this.tokenStorage.token.asReadonly();
 
-  logon(login: string, password: string): Observable<void> {
-    return this.logonService.logon({ login, password }).pipe(
+  logon(login: string, password: string, context?: HttpContext): Observable<void> {
+    return this.logonService.logon({ login, password }, 'body', false, { context }).pipe(
       tap((res) => {
         this.tokenStorage.setTokens(res.token!, res.refreshToken!, res.user!.displayName!);
       }),

@@ -1,13 +1,4 @@
-<p-dialog
-  [visible]="true"
-  [modal]="true"
-  [closable]="true"
-  [dismissableMask]="true"
-  [header]="isAdd ? 'Add Category' : 'Edit Category'"
-  [style]="{ width: '600px' }"
-  (onHide)="close()"
->
-  <form [formGroup]="form" (ngSubmit)="save()">
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
     <p-fluid>
       @if (item) {
         <div class="field">
@@ -34,22 +25,19 @@
           }
         }
         @if (form.get('name')?.pending) {
-          <small class="p-message-info">Checking...</small>
+          <small class="checking-message">Checking...</small>
         }
       </div>
     </p-fluid>
 
-    <ng-template pTemplate="footer">
-      <div class="dialog-footer">
-        <p-button type="button" label="Close" severity="secondary" (click)="close()" />
-        @if (canEdit) {
-          <p-button
-            type="submit"
-            label="Save"
-            [disabled]="form.invalid || form.pending"
-          />
-        }
-      </div>
-    </ng-template>
+    <div class="dialog-footer">
+      <p-button type="button" label="Close" severity="secondary" (click)="close()" />
+      @if (canEdit) {
+        <p-button
+          label="Save"
+          [disabled]="form.invalid || form.pending"
+          (click)="save()"
+        />
+      }
+    </div>
   </form>
-</p-dialog>

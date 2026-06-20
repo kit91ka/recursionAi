@@ -10,6 +10,7 @@ import { routes } from './app.routes';
 import { ZidiumPreset } from './core/config/theme';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
+import { provideApi } from './core/api/provide-api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: { preset: ZidiumPreset },
     }),
+    provideApi(''),
     DialogService,
     ConfirmationService,
     MessageService,
