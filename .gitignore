@@ -25,6 +25,7 @@ coverage/
 
 # === Claude Code (локальные/персональные) ===
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # === Тесты / Playwright ===
 test-results/
